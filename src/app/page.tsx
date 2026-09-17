@@ -1,69 +1,335 @@
-import Image from "next/image";
+import Link from 'next/link';
+import Image from 'next/image';
+import { Heart, TrendingUp, Users, Target, ArrowRight, Sparkles, HandHeart, Banknote, HeartHandshake, Sprout, ShieldCheck } from 'lucide-react';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import CampaignCard from '@/components/campaign/CampaignCard';
+import { createPublicClient } from '@/lib/supabase/public';
+import { Campaign } from '@/types/campaign';
+import { formatRupiah, formatCompactNumber } from '@/lib/utils';
+import { APP_NAME } from '@/lib/constants';
 
-export default function Home() {
+export const revalidate = 60; // 60 seconds ISR
+async function getStats() {
+  const supabase = createPublicClient();
+
+  const [campaignsRes, transactionsRes] = await Promise.all([
+    supabase
+      .from('campaigns')
+      .select('id', { count: 'exact' })
+      .in('status', ['ACTIVE', 'COMPLETED']),
+    supabase
+      .from('transactions')
+      .select('amount')
+      .eq('payment_status', 'SUCCESS'),
+  ]);
+
+  const totalCampaigns = campaignsRes.count || 0;
+  const totalDonations = transactionsRes.data?.length || 0;
+  const totalAmount = transactionsRes.data?.reduce((sum, t) => sum + t.amount, 0) || 0;
+
+  return { totalCampaigns, totalDonations, totalAmount };
+}
+
+async function getFeaturedCampaigns(): Promise<Campaign[]> {
+  const supabase = createPublicClient();
+  const { data } = await supabase
+    .from('campaigns')
+    .select('*')
+    .eq('status', 'ACTIVE')
+    .order('current_amount', { ascending: false })
+    .limit(3);
+
+  return (data as Campaign[]) || [];
+}
+
+async function getLatestCampaigns(): Promise<Campaign[]> {
+  const supabase = createPublicClient();
+  const { data } = await supabase
+    .from('campaigns')
+    .select('*')
+    .in('status', ['ACTIVE', 'COMPLETED'])
+    .order('created_at', { ascending: false })
+    .limit(4);
+
+  return (data as Campaign[]) || [];
+}
+
+export default async function HomePage() {
+  const [stats, featuredCampaigns, latestCampaigns] = await Promise.all([
+    getStats(),
+    getFeaturedCampaigns(),
+    getLatestCampaigns(),
+  ]);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <>
+      <Navbar />
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="relative min-h-[600px] flex items-center justify-center overflow-hidden">
+          {/* Background Image */}
+          <Image
+            src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=2070"
+            alt="Anak-anak dan masyarakat yang membutuhkan bantuan"
+            fill
+            className="object-cover"
+            priority
+          />
+          
+          {/* Blue Overlay */}
+          <div className="absolute inset-0 bg-primary-900/75 mix-blend-multiply" />
+          <div className="absolute inset-0 bg-gradient-to-t from-primary-900/90 via-primary-900/50 to-transparent" />
+          
+          <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center space-y-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-sm rounded text-white text-xs font-bold uppercase tracking-wider">
+              Platform Donasi Terpercaya
+            </div>
+
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight tracking-tight shadow-sm">
+              Satu Kebaikan, Mengubah Jutaan Kehidupan.
+            </h1>
+
+            <p className="text-lg md:text-xl text-primary-50 leading-relaxed max-w-2xl mx-auto drop-shadow">
+              Salurkan bantuan Anda kepada mereka yang paling membutuhkan secara transparan dan aman. Berikan harapan baru hari ini.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+              <Link
+                href="/campaigns"
+                className="inline-flex items-center justify-center px-10 py-4 bg-white text-primary-700 text-base font-bold rounded-lg hover:bg-gray-50 shadow-lg transition-all hover:-translate-y-0.5"
+              >
+                Mulai Berdonasi
+              </Link>
+              <Link
+                href="/campaigns"
+                className="inline-flex items-center justify-center px-10 py-4 bg-primary-600/30 backdrop-blur-sm text-white text-base font-semibold rounded-lg border border-white/50 hover:bg-primary-600/50 transition-colors"
+              >
+                Lihat Campaign
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Why Choose Us Section */}
+        <section className="py-16 bg-primary-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 items-start">
+              <div className="flex flex-col justify-center h-full mb-4 lg:mb-0">
+                <h2 className="text-2xl lg:text-3xl font-extrabold text-navy-900 tracking-tight uppercase leading-snug">
+                  Mengapa Berbagi<br/>
+                  Bersama<br/>
+                  {APP_NAME}?
+                </h2>
+              </div>
+              
+              {/* Feature 1 */}
+              <div className="flex flex-col gap-4">
+                <div className="flex-shrink-0">
+                  <HeartHandshake className="w-10 h-10 text-primary-600" strokeWidth={1.5} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-navy-900 mb-2">Responsif</h3>
+                  <p className="text-navy-600 text-sm leading-relaxed">
+                    Merespon kebutuhan masyarakat dengan cepat dan tepat sasaran.
+                  </p>
+                </div>
+              </div>
+              
+              {/* Feature 2 */}
+              <div className="flex flex-col gap-4">
+                <div className="flex-shrink-0">
+                  <Sprout className="w-10 h-10 text-primary-600" strokeWidth={1.5} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-navy-900 mb-2">Sustainable Program</h3>
+                  <p className="text-navy-600 text-sm leading-relaxed">
+                    Program jangka panjang untuk kemandirian umat secara berkelanjutan.
+                  </p>
+                </div>
+              </div>
+              
+              {/* Feature 3 */}
+              <div className="flex flex-col gap-4">
+                <div className="flex-shrink-0">
+                  <ShieldCheck className="w-10 h-10 text-primary-600" strokeWidth={1.5} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-navy-900 mb-2">Credibility</h3>
+                  <p className="text-navy-600 text-sm leading-relaxed">
+                    Bertanggung jawab penuh menjalankan amanah program dengan transparan.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Featured Campaigns */}
+        {featuredCampaigns.length > 0 && (
+          <section className="py-16">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex items-end justify-between mb-8">
+                <div>
+                  <h2 className="text-2xl md:text-3xl font-bold text-navy-900">
+                    Butuh Bantuan Segera
+                  </h2>
+                </div>
+                <Link
+                  href="/campaigns"
+                  className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors"
+                >
+                  Lihat Semua
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children">
+                {featuredCampaigns.map((campaign) => (
+                  <CampaignCard key={campaign.id} campaign={campaign} />
+                ))}
+              </div>
+
+              <div className="sm:hidden mt-6 text-center">
+                <Link
+                  href="/campaigns"
+                  className="inline-flex items-center gap-1 text-sm font-semibold text-primary-600"
+                >
+                  Lihat Semua Campaign
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Latest Campaigns */}
+        {latestCampaigns.length > 0 && (
+          <section className="py-16 bg-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex items-end justify-between mb-8">
+                <div>
+                  <p className="text-sm font-semibold text-accent-600 uppercase tracking-wider mb-1">
+                    Terbaru
+                  </p>
+                  <h2 className="text-2xl md:text-3xl font-bold text-navy-900">
+                    Campaign Terbaru
+                  </h2>
+                </div>
+                <Link
+                  href="/campaigns"
+                  className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors"
+                >
+                  Lihat Semua
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 stagger-children">
+                {latestCampaigns.map((campaign) => (
+                  <CampaignCard key={campaign.id} campaign={campaign} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Stats Section */}
+        <section className="bg-primary-600 border-b-4 border-primary-700">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-white/20">
+              <div className="flex-1 px-6 py-10 sm:py-12 flex flex-col items-center justify-center text-center group">
+                <HandHeart className="w-10 h-10 text-white/90 mb-4 group-hover:scale-110 transition-transform" />
+                <p className="text-4xl md:text-5xl font-black text-white tracking-tight mb-1">{stats.totalCampaigns}</p>
+                <p className="text-xs md:text-sm font-bold text-primary-100 uppercase tracking-widest">Campaign</p>
+              </div>
+              <div className="flex-1 px-6 py-10 sm:py-12 flex flex-col items-center justify-center text-center group">
+                <Banknote className="w-10 h-10 text-white/90 mb-4 group-hover:scale-110 transition-transform" />
+                <p className="text-4xl md:text-5xl font-black text-white tracking-tight mb-1">{formatRupiah(stats.totalAmount)}</p>
+                <p className="text-xs md:text-sm font-bold text-primary-100 uppercase tracking-widest">Dana Tersalurkan</p>
+              </div>
+              <div className="flex-1 px-6 py-10 sm:py-12 flex flex-col items-center justify-center text-center group">
+                <Users className="w-10 h-10 text-white/90 mb-4 group-hover:scale-110 transition-transform" />
+                <p className="text-4xl md:text-5xl font-black text-white tracking-tight mb-1">{stats.totalDonations}</p>
+                <p className="text-xs md:text-sm font-bold text-primary-100 uppercase tracking-widest">Orang Baik Terlibat</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Galeri Kebaikan Section */}
+        <section className="py-20 bg-white border-t border-navy-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col lg:flex-row gap-12 items-start">
+              
+              {/* Text Content (Left) */}
+              <div className="lg:w-1/3 space-y-6">
+                <h2 className="text-3xl md:text-4xl font-extrabold text-primary-600 tracking-tight">
+                  Galeri Kebaikan
+                </h2>
+                <p className="text-lg text-navy-600 leading-relaxed">
+                  Ratusan penerima manfaat telah mendapatkan layanan yang sesuai dengan kebutuhannya dari bantuan yang dititipkan kepada <strong className="font-semibold text-navy-900">Ruang Senyum Kebahagiaan</strong>.
+                </p>
+                <div className="pt-4 hidden lg:block">
+                  <div className="w-16 h-1 bg-primary-600 rounded-full"></div>
+                </div>
+              </div>
+
+              {/* Masonry Layout (Right) */}
+              <div className="lg:w-2/3 w-full columns-2 md:columns-3 gap-4 space-y-4">
+                {[
+                  'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=500&q=80',
+                  'https://images.unsplash.com/photo-1593113565630-10280eb0092c?auto=format&fit=crop&w=500&q=80',
+                  'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&w=500&q=80',
+                  'https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=500&q=80',
+                  'https://images.unsplash.com/photo-1518398046578-8cca57782e17?auto=format&fit=crop&w=500&q=80',
+                  'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?auto=format&fit=crop&w=500&q=80',
+                  'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=500&q=80',
+                  'https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=500&q=80',
+                  'https://images.unsplash.com/photo-1461532257246-777de18cd58b?auto=format&fit=crop&w=500&q=80',
+                  'https://images.unsplash.com/photo-1528747045269-390fe33c19f2?auto=format&fit=crop&w=500&q=80'
+                ].map((src, idx) => (
+                  <div key={idx} className="break-inside-avoid relative overflow-hidden rounded-xl border border-navy-100 shadow-sm group">
+                    <Image
+                      src={src}
+                      alt={`Galeri kebaikan ${idx + 1}`}
+                      width={500}
+                      height={400}
+                      className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-navy-900/0 group-hover:bg-navy-900/10 transition-colors duration-300" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-24 bg-primary-600">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+              <div className="max-w-2xl text-center md:text-left space-y-4">
+                <h2 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+                  Siap Membuat Perubahan Hari Ini?
+                </h2>
+                <p className="text-lg text-primary-100 leading-relaxed">
+                  Jadilah bagian dari ribuan orang baik yang telah membantu sesama. Berapapun donasi Anda, akan mengukir senyum bagi mereka yang membutuhkan.
+                </p>
+              </div>
+              <div className="flex-shrink-0 w-full md:w-auto mt-4 md:mt-0">
+                <Link
+                  href="/campaigns"
+                  className="w-full md:w-auto inline-flex items-center justify-center px-10 py-4 bg-white text-primary-700 text-base font-bold rounded-lg hover:bg-primary-50 transition-colors shadow-sm"
+                >
+                  Mulai Donasi Sekarang
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
-    </div>
+      <Footer />
+    </>
   );
 }

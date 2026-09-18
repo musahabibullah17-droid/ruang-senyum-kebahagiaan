@@ -23,13 +23,7 @@ export default function BottomNav() {
           <span className="text-[10px] font-medium">Beranda</span>
         </Link>
         
-        <Link 
-          href="/campaigns?focus=search" 
-          className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${pathname === '/campaigns' && typeof window !== 'undefined' && window.location.search.includes('focus=search') ? 'text-primary-600' : 'text-navy-400 hover:text-navy-600'}`}
-        >
-          <Search className="w-6 h-6" />
-          <span className="text-[10px] font-medium">Cari</span>
-        </Link>
+
         
         <Link 
           href="/campaigns" 

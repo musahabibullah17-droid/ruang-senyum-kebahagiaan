@@ -26,10 +26,24 @@ export default function Navbar() {
             <div className="w-9 h-9 bg-primary-600 rounded-lg flex items-center justify-center shadow group-hover:shadow-md transition-shadow">
               <Heart className="w-5 h-5 text-white fill-white" />
             </div>
-            <span className="text-xl font-bold text-navy-900 tracking-tight">
+            <span className="text-xl font-bold text-navy-900 tracking-tight hidden sm:block">
               {APP_NAME}
             </span>
           </Link>
+
+          {/* Mobile Search */}
+          <form onSubmit={handleSearch} className="md:hidden flex-1 ml-4">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder={`Cari Campaign ${APP_NAME}...`}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 bg-white border border-gray-300 focus:border-primary-500 rounded-full text-xs transition-all outline-none"
+              />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            </div>
+          </form>
 
           {/* Desktop Navigation (Hidden on Mobile) */}
           <div className="hidden md:flex items-center gap-1">

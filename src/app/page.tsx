@@ -4,6 +4,7 @@ import { Heart, TrendingUp, Users, Target, ArrowRight, Sparkles, HandHeart, Bank
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import CampaignCard from '@/components/campaign/CampaignCard';
+import MobileCampaignCarousel from '@/components/campaign/MobileCampaignCarousel';
 import { createPublicClient } from '@/lib/supabase/public';
 import { Campaign } from '@/types/campaign';
 import { formatRupiah, formatCompactNumber } from '@/lib/utils';
@@ -112,9 +113,11 @@ export default async function HomePage() {
         </section>
 
         {/* Why Choose Us Section */}
-        <section className="py-16 bg-primary-50">
+        <section className="py-8 md:py-16 bg-primary-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 items-start">
+            
+            {/* --- TAMPILAN DESKTOP/WEB --- */}
+            <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 items-start">
               <div className="flex flex-col justify-center h-full mb-4 lg:mb-0">
                 <h2 className="text-2xl lg:text-3xl font-extrabold text-navy-900 tracking-tight uppercase leading-snug">
                   Mengapa Berbagi<br/>
@@ -162,6 +165,55 @@ export default async function HomePage() {
                 </div>
               </div>
             </div>
+
+            {/* --- TAMPILAN MOBILE --- */}
+            <div className="md:hidden flex flex-col gap-6">
+              <div>
+                <h2 className="text-xl font-extrabold text-navy-900 tracking-tight uppercase leading-snug">
+                  Mengapa Berbagi Bersama {APP_NAME}?
+                </h2>
+              </div>
+              
+              {/* Feature 1 */}
+              <div className="flex flex-row gap-4 items-start">
+                <div className="flex-shrink-0 mt-1">
+                  <HeartHandshake className="w-8 h-8 text-primary-600" strokeWidth={1.5} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-navy-900 mb-1">Responsif</h3>
+                  <p className="text-navy-600 text-sm leading-relaxed">
+                    Merespon kebutuhan masyarakat dengan cepat dan tepat sasaran.
+                  </p>
+                </div>
+              </div>
+              
+              {/* Feature 2 */}
+              <div className="flex flex-row gap-4 items-start">
+                <div className="flex-shrink-0 mt-1">
+                  <Sprout className="w-8 h-8 text-primary-600" strokeWidth={1.5} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-navy-900 mb-1">Sustainable Program</h3>
+                  <p className="text-navy-600 text-sm leading-relaxed">
+                    Program jangka panjang untuk kemandirian umat secara berkelanjutan.
+                  </p>
+                </div>
+              </div>
+              
+              {/* Feature 3 */}
+              <div className="flex flex-row gap-4 items-start">
+                <div className="flex-shrink-0 mt-1">
+                  <ShieldCheck className="w-8 h-8 text-primary-600" strokeWidth={1.5} />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-navy-900 mb-1">Credibility</h3>
+                  <p className="text-navy-600 text-sm leading-relaxed">
+                    Bertanggung jawab penuh menjalankan amanah program dengan transparan.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
           </div>
         </section>
 
@@ -184,11 +236,13 @@ export default async function HomePage() {
                 </Link>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children">
+              <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 stagger-children">
                 {featuredCampaigns.map((campaign) => (
                   <CampaignCard key={campaign.id} campaign={campaign} />
                 ))}
               </div>
+              
+              <MobileCampaignCarousel campaigns={featuredCampaigns} />
 
               <div className="sm:hidden mt-6 text-center">
                 <Link
@@ -225,10 +279,22 @@ export default async function HomePage() {
                 </Link>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 stagger-children">
+              <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 stagger-children">
                 {latestCampaigns.map((campaign) => (
                   <CampaignCard key={campaign.id} campaign={campaign} />
                 ))}
+              </div>
+              
+              <MobileCampaignCarousel campaigns={latestCampaigns} />
+
+              <div className="md:hidden mt-6 text-center">
+                <Link
+                  href="/campaigns"
+                  className="inline-flex items-center gap-1 text-sm font-semibold text-primary-600"
+                >
+                  Lihat Semua Campaign
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
             </div>
           </section>

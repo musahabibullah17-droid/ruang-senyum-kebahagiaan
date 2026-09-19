@@ -14,9 +14,9 @@ export async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Protect admin routes (except /admin/login)
-  if (request.nextUrl.pathname.startsWith('/admin') && !request.nextUrl.pathname.startsWith('/admin/login')) {
+  if (request.nextUrl.pathname.startsWith('/master') && !request.nextUrl.pathname.startsWith('/master/login')) {
     if (!user) {
-      const loginUrl = new URL('/admin/login', request.url);
+      const loginUrl = new URL('/master/login', request.url);
       loginUrl.searchParams.set('redirectTo', request.nextUrl.pathname);
       return NextResponse.redirect(loginUrl);
     }
@@ -37,5 +37,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: ['/master/:path*'],
 };

@@ -116,7 +116,7 @@ export default async function AdminDashboardPage() {
               Transaksi Terbaru
             </h2>
             <Link
-              href="/admin/transactions"
+              href="/master/transactions"
               className="text-sm text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1"
             >
               Lihat Semua <ChevronRight className="w-4 h-4" />

@@ -7,7 +7,7 @@ export default function NewCampaignPage() {
     <div className="space-y-6 max-w-4xl mx-auto">
       <div className="flex items-center gap-4 mb-6">
         <Link
-          href="/admin/campaigns"
+          href="/master/campaigns"
           className="p-2 bg-white text-navy-500 hover:text-navy-900 border border-navy-200 rounded-lg shadow-sm transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />

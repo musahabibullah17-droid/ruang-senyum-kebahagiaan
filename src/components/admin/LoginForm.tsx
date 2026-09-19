@@ -46,7 +46,7 @@ export default function LoginForm() {
       }
 
       if (profile?.role === 'admin') {
-        router.push('/admin/campaigns');
+        router.push('/master/campaigns');
         router.refresh();
       } else {
         await supabase.auth.signOut();

@@ -8,7 +8,7 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   // Don't show bottom nav on admin routes
-  if (pathname?.startsWith('/admin')) {
+  if (pathname?.startsWith('/master')) {
     return null;
   }
 

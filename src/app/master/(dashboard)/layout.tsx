@@ -7,7 +7,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Sidebar */}
       <aside className="w-64 bg-navy-900 text-white flex-shrink-0 flex flex-col">
         <div className="p-6 border-b border-navy-800">
-          <Link href="/admin" className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+          <Link href="/master" className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
             <span className="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center shadow-inner">
               BS
             </span>
@@ -17,21 +17,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         <nav className="flex-1 p-4 space-y-1">
           <Link
-            href="/admin"
+            href="/master"
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-300 hover:text-white hover:bg-navy-800 transition-colors"
           >
             <LayoutDashboard className="w-5 h-5" />
             Dashboard
           </Link>
           <Link
-            href="/admin/campaigns"
+            href="/master/campaigns"
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-300 hover:text-white hover:bg-navy-800 transition-colors"
           >
             <Megaphone className="w-5 h-5" />
             Campaigns
           </Link>
           <Link
-            href="/admin/transactions"
+            href="/master/transactions"
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-navy-300 hover:text-white hover:bg-navy-800 transition-colors"
           >
             <Receipt className="w-5 h-5" />

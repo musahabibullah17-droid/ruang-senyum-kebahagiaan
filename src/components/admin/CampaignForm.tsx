@@ -138,7 +138,7 @@ export default function CampaignForm({ initialData, isEdit }: CampaignFormProps)
             .eq('id', campaignId);
       }
 
-      router.push('/admin/campaigns');
+      router.push('/master/campaigns');
       router.refresh();
       
     } catch (err: any) {

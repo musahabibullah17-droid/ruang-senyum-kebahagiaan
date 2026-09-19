@@ -1,23 +1,47 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { snap } from '@/lib/midtrans';
-import { CreateDonationPayload } from '@/types/transaction';
 import { generateTransactionCode } from '@/lib/utils';
 import { MIN_DONATION_AMOUNT } from '@/lib/constants';
+import { z } from 'zod';
+import rateLimit, { getIP } from '@/lib/rate-limit';
+
+const limiter = rateLimit({
+  uniqueTokenPerInterval: 500,
+  interval: 60000,
+});
+
+const donationSchema = z.object({
+  campaign_id: z.string().uuid("ID Campaign tidak valid"),
+  donor_name: z.string().min(2, "Nama minimal 2 karakter").max(100),
+  donor_email: z.string().email("Email tidak valid"),
+  amount: z.number().min(MIN_DONATION_AMOUNT, `Minimal donasi adalah Rp${MIN_DONATION_AMOUNT}`),
+  message: z.string().max(500).optional(),
+  is_anonymous: z.boolean().optional().default(false),
+});
 
 export async function POST(request: Request) {
   try {
-    const body: CreateDonationPayload = await request.json();
-    const { campaign_id, donor_name, donor_email, amount, message, is_anonymous } = body;
-
-    // 1. Validation
-    if (!campaign_id || !donor_name || !donor_email || !amount) {
-      return NextResponse.json({ error: 'Data tidak lengkap' }, { status: 400 });
+    // 1. Rate Limiting
+    try {
+      const ip = getIP(request);
+      await limiter.check(5, ip); // Limit to 5 requests per minute per IP
+    } catch {
+      return NextResponse.json({ error: 'Terlalu banyak permintaan. Silakan coba lagi nanti.' }, { status: 429 });
     }
 
-    if (amount < MIN_DONATION_AMOUNT) {
-      return NextResponse.json({ error: `Minimal donasi adalah Rp${MIN_DONATION_AMOUNT}` }, { status: 400 });
+    // 2. Input Validation & Sanitization with Zod
+    const rawBody = await request.json();
+    const validationResult = donationSchema.safeParse(rawBody);
+
+    if (!validationResult.success) {
+      return NextResponse.json({ 
+        error: 'Data input tidak valid', 
+        details: validationResult.error.format() 
+      }, { status: 400 });
     }
+
+    const { campaign_id, donor_name, donor_email, amount, message, is_anonymous } = validationResult.data;
 
     const supabase = createAdminClient();
 
@@ -92,8 +116,9 @@ export async function POST(request: Request) {
     });
   } catch (error: any) {
     console.error('Donation API Error:', error);
+    // OBFUSCATION: Do not leak internal error message to client
     return NextResponse.json(
-      { error: 'Terjadi kesalahan pada server', details: error?.message || error },
+      { error: 'Terjadi kesalahan pada server saat memproses donasi.' },
       { status: 500 }
     );
   }

@@ -108,7 +108,7 @@ export default function AdminCampaignsPage() {
           <p className="text-navy-500">Kelola semua program donasi</p>
         </div>
         <Link
-          href="/admin/campaigns/new"
+          href="/master/campaigns/new"
           className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 shadow-md transition-all"
         >
           <Plus className="w-5 h-5" />
@@ -219,7 +219,7 @@ export default function AdminCampaignsPage() {
                         )}
                       </button>
                       <Link
-                        href={`/admin/campaigns/${campaign.id}/edit`}
+                        href={`/master/campaigns/${campaign.id}/edit`}
                         className="inline-block p-2 text-primary-600 hover:text-primary-700 hover:bg-primary-50 rounded-lg transition-colors"
                         title="Edit"
                       >

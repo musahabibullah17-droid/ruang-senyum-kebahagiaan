@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { APP_NAME, APP_DESCRIPTION } from "@/lib/constants";
 import BottomNav from "@/components/layout/BottomNav";
+import NextTopLoader from "nextjs-toploader";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="id" className={`h-full antialiased ${plusJakartaSans.variable}`}>
       <body className="min-h-full flex flex-col font-sans pb-16 md:pb-0">
+        <NextTopLoader color="#0ea5e9" height={3} showSpinner={false} />
         {children}
         <BottomNav />
       </body>

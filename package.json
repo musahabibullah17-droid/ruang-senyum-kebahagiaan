@@ -15,6 +15,7 @@
     "lucide-react": "^1.46.0",
     "midtrans-client": "^1.4.3",
     "next": "16.3.5",
+    "nextjs-toploader": "^3.9.17",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "sharp": "^0.35.4",

@@ -61,14 +61,17 @@ export default function CampaignDetailClient({
       <Navbar />
       <main className="flex-1 pb-24 md:pb-8">
         {/* Breadcrumb */}
-        <div className="bg-white border-b border-navy-100">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        <div className="bg-white md:bg-transparent border-b border-slate-100 md:border-none md:pt-6 md:pb-0">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 md:py-0">
             <Link
               href="/campaigns"
-              className="inline-flex items-center gap-1 text-sm text-navy-500 hover:text-primary-600 transition-colors"
+              className="inline-flex items-center gap-2 md:gap-1.5 px-1 py-1 pr-4 md:px-0 md:py-0 bg-slate-50 border border-slate-100 md:bg-transparent md:border-none rounded-full md:rounded-none text-sm font-semibold text-slate-600 hover:text-[#0284c7] transition-all w-fit"
             >
-              <ArrowLeft className="w-4 h-4" />
-              Kembali ke Campaign
+              <div className="md:hidden w-7 h-7 rounded-full bg-white shadow-sm flex items-center justify-center border border-slate-100">
+                <ArrowLeft className="w-3.5 h-3.5 text-slate-700" />
+              </div>
+              <ArrowLeft className="hidden md:block w-4 h-4" />
+              Kembali
             </Link>
           </div>
         </div>

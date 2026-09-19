@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Heart, LayoutGrid, Search } from 'lucide-react';
+import { Home, Heart, Info, HelpCircle } from 'lucide-react';
 
 export default function BottomNav() {
   const pathname = usePathname();
@@ -17,28 +17,34 @@ export default function BottomNav() {
       <div className="flex justify-around items-end h-16 px-2 pb-2">
         <Link 
           href="/" 
-          className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${pathname === '/' ? 'text-primary-600' : 'text-navy-400 hover:text-navy-600'}`}
+          className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${pathname === '/' ? 'text-[#0284c7]' : 'text-slate-400 hover:text-slate-600'}`}
         >
-          <Home className="w-6 h-6" />
-          <span className="text-[10px] font-medium">Beranda</span>
+          <Home className="w-5 h-5 sm:w-6 sm:h-6" />
+          <span className="text-[10px] font-medium text-center leading-tight">Beranda</span>
         </Link>
         
+        <Link 
+          href="/campaigns" 
+          className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${pathname === '/campaigns' || pathname?.startsWith('/campaign/') ? 'text-[#0284c7]' : 'text-slate-400 hover:text-slate-600'}`}
+        >
+          <Heart className="w-5 h-5 sm:w-6 sm:h-6" />
+          <span className="text-[10px] font-medium text-center leading-tight">Donasi</span>
+        </Link>
+        
+        <Link 
+          href="/about" 
+          className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${pathname === '/about' ? 'text-[#0284c7]' : 'text-slate-400 hover:text-slate-600'}`}
+        >
+          <Info className="w-5 h-5 sm:w-6 sm:h-6" />
+          <span className="text-[10px] font-medium text-center leading-tight">Tentang<br/>Kami</span>
+        </Link>
 
-        
         <Link 
-          href="/campaigns" 
-          className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${pathname === '/campaigns' && (typeof window === 'undefined' || !window.location.search.includes('focus=search')) ? 'text-primary-600' : 'text-navy-400 hover:text-navy-600'}`}
+          href="/cara-donasi" 
+          className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${pathname === '/cara-donasi' ? 'text-[#0284c7]' : 'text-slate-400 hover:text-slate-600'}`}
         >
-          <Heart className="w-6 h-6" />
-          <span className="text-[10px] font-medium">Donasi</span>
-        </Link>
-        
-        <Link 
-          href="/campaigns" 
-          className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${pathname === '/campaigns' && (typeof window === 'undefined' || !window.location.search.includes('focus=search')) ? 'text-primary-600' : 'text-navy-400 hover:text-navy-600'}`}
-        >
-          <LayoutGrid className="w-6 h-6" />
-          <span className="text-[10px] font-medium">Program</span>
+          <HelpCircle className="w-5 h-5 sm:w-6 sm:h-6" />
+          <span className="text-[10px] font-medium text-center leading-tight">Cara<br/>Donasi</span>
         </Link>
       </div>
     </div>

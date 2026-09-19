@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Heart, Mail, MapPin } from 'lucide-react';
 import { APP_NAME } from '@/lib/constants';
+import Logo from '@/components/ui/Logo';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -12,13 +13,8 @@ export default function Footer() {
         <div className="py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-9 h-9 bg-primary-600 rounded-lg flex items-center justify-center">
-                <Heart className="w-5 h-5 text-white fill-white" />
-              </div>
-              <span className="text-xl font-bold text-white tracking-tight">
-                {APP_NAME}
-              </span>
+            <Link href="/" className="flex items-center group">
+              <Logo className="h-10 w-auto text-white group-hover:scale-105 transition-transform duration-300" />
             </Link>
             <p className="text-sm text-navy-400 leading-relaxed max-w-sm">
               Platform donasi dan crowdfunding sosial untuk membantu sesama yang membutuhkan. Bersama kita bisa membuat perubahan.

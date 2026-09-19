@@ -12,7 +12,7 @@ const limiter = rateLimit({
 });
 
 const donationSchema = z.object({
-  campaign_id: z.string().uuid("ID Campaign tidak valid"),
+  campaign_id: z.string().min(1, "ID Campaign tidak valid"),
   donor_name: z.string().min(2, "Nama minimal 2 karakter").max(100),
   donor_email: z.string().email("Email tidak valid"),
   amount: z.number().min(MIN_DONATION_AMOUNT, `Minimal donasi adalah Rp${MIN_DONATION_AMOUNT}`),

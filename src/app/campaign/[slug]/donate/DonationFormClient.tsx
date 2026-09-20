@@ -343,19 +343,21 @@ export default function DonationFormClient({ campaign }: DonationFormClientProps
             <button
               type="submit"
               disabled={!isFormValid() || loading || step === 'processing'}
-              className="w-full py-4 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-bold text-base rounded-2xl shadow-lg hover:from-primary-600 hover:to-primary-700 hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:shadow-lg transition-all flex items-center justify-center gap-2"
+              className="tf-btn style-solid w-full !h-14 !rounded-xl !text-base font-bold shadow-lg"
             >
               {loading || step === 'processing' ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Memproses...
+                  <span>Memproses...</span>
                 </>
               ) : (
                 <>
                   <Heart className="w-5 h-5" />
-                  {amount >= MIN_DONATION_AMOUNT
-                    ? `Donasi ${formatRupiah(amount)}`
-                    : 'Donasi Sekarang'}
+                  <span>
+                    {amount >= MIN_DONATION_AMOUNT
+                      ? `Donasi ${formatRupiah(amount)}`
+                      : 'Donasi Sekarang'}
+                  </span>
                 </>
               )}
             </button>

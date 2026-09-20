@@ -246,16 +246,16 @@ export default function CampaignDetailClient({
             <div className="flex gap-3">
               <button
                 onClick={handleShare}
-                className="p-3 border-2 border-navy-200 rounded-xl text-navy-600 hover:bg-navy-50 transition-colors"
+                className="tf-btn style-border !h-12 !w-12 !p-0 !rounded-xl text-primary-600 shrink-0"
               >
                 <Share2 className="w-5 h-5" />
               </button>
               <Link
                 href={`/campaign/${campaign.slug}/donate`}
-                className="flex-1 inline-flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-bold rounded-xl shadow-lg hover:from-primary-600 hover:to-primary-700 transition-all"
+                className="tf-btn style-solid flex-1 !h-12 !rounded-xl text-white font-bold"
               >
                 <Heart className="w-5 h-5" />
-                Donasi Sekarang
+                <span>Donasi Sekarang</span>
               </Link>
             </div>
           </div>
@@ -291,6 +291,8 @@ function CampaignSidebar({
   isActive: boolean;
   onShare: () => void;
 }) {
+  const [activeBtn, setActiveBtn] = useState<number>(0);
+
   return (
     <div className="bg-white rounded-2xl border border-navy-100 shadow-sm overflow-hidden">
       {/* Progress */}
@@ -342,27 +344,35 @@ function CampaignSidebar({
       </div>
 
       {/* Actions */}
-      <div className="p-4 bg-navy-50/50 border-t border-navy-100 space-y-3">
-        {isActive ? (
-          <Link
-            href={`/campaign/${campaign.slug}/donate`}
-            className="block w-full text-center py-3.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white font-bold rounded-xl shadow-md hover:from-primary-600 hover:to-primary-700 hover:shadow-lg transform hover:-translate-y-0.5 transition-all"
-          >
-            <Heart className="w-5 h-5 inline mr-2" />
-            Donasi Sekarang
-          </Link>
-        ) : (
-          <div className="text-center py-3.5 bg-navy-200 text-navy-500 font-medium rounded-xl">
-            Campaign Tidak Aktif
-          </div>
-        )}
-        <button
-          onClick={onShare}
-          className="w-full flex items-center justify-center gap-2 py-3 border-2 border-navy-200 text-navy-600 font-medium rounded-xl hover:bg-white hover:border-primary-300 hover:text-primary-600 transition-all"
+      <div className="p-4 bg-navy-50/50 border-t border-navy-100">
+        <div 
+          className="btn-campaign-pair"
+          onMouseLeave={() => setActiveBtn(0)}
         >
-          <Share2 className="w-4 h-4" />
-          Bagikan Campaign
-        </button>
+          {isActive ? (
+            <Link
+              href={`/campaign/${campaign.slug}/donate`}
+              onMouseEnter={() => setActiveBtn(0)}
+              onClick={() => setActiveBtn(0)}
+              className={`btn-campaign-item ${activeBtn === 0 ? 'is-active' : 'is-inactive'}`}
+            >
+              <Heart className="w-5 h-5" />
+              <span>Donasi Sekarang</span>
+            </Link>
+          ) : (
+            <div className="text-center py-3.5 bg-navy-200 text-navy-500 font-medium rounded-xl">
+              Campaign Tidak Aktif
+            </div>
+          )}
+          <button
+            onClick={onShare}
+            onMouseEnter={() => setActiveBtn(1)}
+            className={`btn-campaign-item ${activeBtn === 1 ? 'is-active' : 'is-inactive'}`}
+          >
+            <Share2 className="w-4 h-4" />
+            <span>Bagikan Campaign</span>
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -1,0 +1,297 @@
+/* Header & Navbar SCSS Styles (Transparent + Smooth Sticky Transition) */
+@use "./variables" as *;
+
+.header-main {
+  position: relative;
+  z-index: 40;
+  background-color: var(--White);
+  border-bottom: 1px solid var(--Line);
+  transition: all 0.35s ease;
+
+  .header-inner {
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  /* Two-phase sticky navbar animation */
+  &.header-sticky {
+    top: 0;
+    left: 0;
+    right: 0;
+    position: fixed;
+    opacity: 0;
+    z-index: 9999;
+    transform: translateY(-120%);
+    transition: 0.5s cubic-bezier(0.24, 0.74, 0.58, 1);
+    visibility: hidden;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.08);
+    pointer-events: none;
+
+    &.is-sticky {
+      transform: translateY(0);
+      visibility: visible;
+      opacity: 1;
+      pointer-events: all;
+    }
+  }
+
+  /* Transparent Navbar state (before scroll on homepage) */
+  &.header-transparent:not(.is-sticky) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    background-color: transparent !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: none !important;
+
+    .logo-container {
+      color: #ffffff !important;
+    }
+
+    /* Mobile Search in Transparent Mode */
+    .mobile-search-form {
+      .mobile-search-input {
+        background-color: rgba(255, 255, 255, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: #ffffff;
+
+        &::placeholder {
+          color: rgba(255, 255, 255, 0.75);
+        }
+
+        &:focus {
+          background-color: #ffffff;
+          color: var(--Heading);
+          border-color: var(--Primary);
+          box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+
+          &::placeholder {
+            color: #94a3b8;
+          }
+        }
+      }
+
+      .mobile-search-icon {
+        color: rgba(255, 255, 255, 0.85);
+      }
+
+      &:focus-within .mobile-search-icon {
+        color: var(--Primary);
+      }
+    }
+
+    /* Desktop Navigation in Transparent Mode */
+    .desktop-nav {
+      .nav-link {
+        color: rgba(255, 255, 255, 0.92);
+
+        &:hover {
+          color: #ffffff;
+          background-color: rgba(255, 255, 255, 0.16);
+        }
+
+        &.active {
+          color: #ffffff;
+          background-color: rgba(255, 255, 255, 0.22);
+          font-weight: 700;
+        }
+      }
+
+      .nav-search-wrap {
+        .nav-search-input {
+          background-color: rgba(255, 255, 255, 0.18);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          color: #ffffff;
+
+          &::placeholder {
+            color: rgba(255, 255, 255, 0.75);
+          }
+
+          &:focus {
+            background-color: #ffffff;
+            color: var(--Heading);
+            border-color: var(--Primary);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+
+            &::placeholder {
+              color: #94a3b8;
+            }
+          }
+        }
+
+        .search-icon {
+          color: rgba(255, 255, 255, 0.85);
+        }
+
+        &:focus-within .search-icon {
+          color: var(--Primary);
+        }
+      }
+
+      /* Tombol Donasi di Navbar Transparan (Varian Putih dengan Animasi Fill Kiri-ke-Kanan) */
+      .btn-nav-donate {
+        border: 1.5px solid #ffffff !important;
+        background-color: transparent !important;
+        color: #ffffff !important;
+
+        &::after {
+          background-color: #ffffff !important;
+          width: 0;
+        }
+
+        span {
+          color: #ffffff !important;
+        }
+
+        &:hover,
+        &:active,
+        &.active {
+          color: var(--Primary) !important;
+          border-color: #ffffff !important;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+          transform: translateY(-1px);
+
+          &::after {
+            width: 100% !important;
+            background-color: #ffffff !important;
+          }
+
+          span {
+            color: var(--Primary) !important;
+          }
+        }
+      }
+    }
+  }
+
+  /* Default / Sticky Styles */
+  .mobile-search-form {
+    flex: 1;
+    position: relative;
+
+    .mobile-search-input {
+      width: 100%;
+      padding-left: 36px;
+      padding-right: 14px;
+      padding-top: 8px;
+      padding-bottom: 8px;
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 9999px;
+      font-size: 13px;
+      color: var(--Heading);
+      outline: none;
+      transition: all 0.25s ease;
+
+      &::placeholder {
+        color: #94a3b8;
+      }
+
+      &:focus {
+        background-color: #ffffff;
+        border-color: var(--Primary);
+        box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+      }
+    }
+
+    .mobile-search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      pointer-events: none;
+      width: 16px;
+      height: 16px;
+      transition: color 0.2s ease;
+    }
+  }
+
+  /* Desktop Navigation */
+  .desktop-nav {
+    display: none;
+
+    @media (min-width: 768px) {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-link {
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--Heading);
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+
+      &:hover {
+        color: var(--Primary);
+        background-color: var(--Primary-50);
+      }
+
+      &.active {
+        color: var(--Primary);
+        font-weight: 700;
+        background-color: var(--Primary-50);
+      }
+    }
+
+    .nav-search-wrap {
+      position: relative;
+      margin-left: 8px;
+      margin-right: 8px;
+
+      .nav-search-input {
+        padding-left: 36px;
+        padding-right: 16px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        background-color: #f8fafc;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        font-size: 13.5px;
+        color: var(--Heading);
+        outline: none;
+        width: 180px;
+        transition: all 0.3s ease;
+
+        &:hover {
+          background-color: #f1f5f9;
+        }
+
+        &:focus {
+          width: 240px;
+          background-color: #ffffff;
+          border-color: var(--Primary);
+          box-shadow: 0 2px 10px rgba(2, 132, 199, 0.1);
+        }
+
+        &::placeholder {
+          color: #94a3b8;
+        }
+      }
+
+      .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        pointer-events: none;
+        width: 16px;
+        height: 16px;
+        transition: color 0.2s ease;
+      }
+    }
+  }
+}

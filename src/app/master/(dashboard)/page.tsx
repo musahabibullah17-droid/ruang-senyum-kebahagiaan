@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
-import { Target, Users, TrendingUp, Clock, FileText, ChevronRight } from 'lucide-react';
+import { Target, Users, TrendingUp, Clock, FileText, ChevronRight, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { formatRupiah, formatDate } from '@/lib/utils';
 import { Transaction } from '@/types/transaction';
@@ -38,7 +38,7 @@ async function getRecentTransactions(): Promise<(Transaction & { campaigns: { ti
     .from('transactions')
     .select('*, campaigns(title)')
     .order('created_at', { ascending: false })
-    .limit(5);
+    .limit(6);
 
   return (data as any) || [];
 }
@@ -50,111 +50,144 @@ export default async function AdminDashboardPage() {
   ]);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-navy-900">Dashboard Admin</h1>
-        <p className="text-navy-500">Ringkasan aktivitas platform donasi</p>
-      </div>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-        <div className="bg-white rounded-xl border border-navy-200 p-6 shadow-sm">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-primary-50 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-primary-600" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-navy-500">Total Donasi Berhasil</p>
-              <h3 className="text-xl font-bold text-navy-900">{formatRupiah(stats.totalSuccessAmount)}</h3>
-            </div>
-          </div>
+    <div className="space-y-8">
+      {/* Top Header Section */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-navy-900 tracking-tight">Ringkasan Dashboard</h1>
+          <p className="text-sm text-slate-500 mt-1">Pantau donasi masuk dan status campaign secara real-time</p>
         </div>
-
-        <div className="bg-white rounded-xl border border-navy-200 p-6 shadow-sm">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-accent-50 rounded-lg flex items-center justify-center">
-              <Target className="w-6 h-6 text-accent-600" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-navy-500">Campaign Aktif</p>
-              <h3 className="text-xl font-bold text-navy-900">{stats.activeCampaigns} / {stats.totalCampaigns}</h3>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl border border-navy-200 p-6 shadow-sm">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-info/10 rounded-lg flex items-center justify-center">
-              <Users className="w-6 h-6 text-info" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-navy-500">Total Transaksi</p>
-              <h3 className="text-xl font-bold text-navy-900">{stats.totalTransactions}</h3>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl border border-navy-200 p-6 shadow-sm">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-warning/10 rounded-lg flex items-center justify-center">
-              <Clock className="w-6 h-6 text-warning" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-navy-500">Transaksi Pending</p>
-              <h3 className="text-xl font-bold text-navy-900">{stats.pendingTransactions}</h3>
-            </div>
-          </div>
+        <div>
+          <Link
+            href="/master/campaigns/new"
+            className="tf-btn primary"
+          >
+            <span>Buat Campaign</span>
+            <ArrowUpRight className="w-4 h-4" />
+          </Link>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Transactions */}
-        <div className="bg-white rounded-xl border border-navy-200 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-navy-100 flex justify-between items-center">
-            <h2 className="text-base font-bold text-navy-900 flex items-center gap-2">
-              <FileText className="w-4 h-4 text-navy-400" />
-              Transaksi Terbaru
-            </h2>
-            <Link
-              href="/master/transactions"
-              className="text-sm text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1"
-            >
-              Lihat Semua <ChevronRight className="w-4 h-4" />
-            </Link>
+      {/* Stats Grid (.flat-counter-v2) */}
+      <div className="flat-counter-v2">
+        <div className="counter-box">
+          <div className="box-icon icon-success">
+            <TrendingUp />
           </div>
-          <div className="divide-y divide-navy-100">
-            {recentTransactions.map((tx) => (
-              <div key={tx.id} className="p-4 hover:bg-navy-50 transition-colors">
-                <div className="flex justify-between items-start mb-1">
-                  <p className="text-sm font-medium text-navy-900">{tx.donor_name}</p>
-                  <span
-                    className={`text-xs font-medium px-2 py-1 rounded-full ${
-                      tx.payment_status === 'SUCCESS'
-                        ? 'bg-green-100 text-green-700'
+          <div className="content-box">
+            <div className="title-count">Donasi Berhasil</div>
+            <div className="number">{formatRupiah(stats.totalSuccessAmount)}</div>
+          </div>
+        </div>
+
+        <div className="counter-box">
+          <div className="box-icon">
+            <Target />
+          </div>
+          <div className="content-box">
+            <div className="title-count">Campaign Aktif</div>
+            <div className="number">{stats.activeCampaigns} / {stats.totalCampaigns}</div>
+          </div>
+        </div>
+
+        <div className="counter-box">
+          <div className="box-icon icon-accent">
+            <Users />
+          </div>
+          <div className="content-box">
+            <div className="title-count">Total Transaksi</div>
+            <div className="number">{stats.totalTransactions}</div>
+          </div>
+        </div>
+
+        <div className="counter-box">
+          <div className="box-icon icon-warning">
+            <Clock />
+          </div>
+          <div className="content-box">
+            <div className="title-count">Donasi Menunggu</div>
+            <div className="number">{stats.pendingTransactions}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Transactions (.widget-box-2 + .wrap-table) */}
+      <div className="widget-box-2">
+        <div className="widget-header">
+          <h2 className="title">
+            <FileText className="w-5 h-5 text-primary-500" />
+            Transaksi Donasi Terbaru
+          </h2>
+          <Link
+            href="/master/transactions"
+            className="tf-btn-link text-primary-600 hover:text-primary-700 font-semibold text-sm inline-flex items-center gap-1.5"
+          >
+            <span>Lihat Semua Transaksi</span>
+            <ChevronRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="wrap-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Donatur</th>
+                <th>Campaign</th>
+                <th>Jumlah Donasi</th>
+                <th>Status</th>
+                <th>Tanggal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentTransactions.map((tx) => (
+                <tr key={tx.id}>
+                  <td>
+                    <div className="font-semibold text-navy-900">{tx.donor_name}</div>
+                    <div className="text-xs text-slate-400 mt-0.5">{tx.transaction_code}</div>
+                  </td>
+                  <td>
+                    <div className="max-w-[280px] truncate text-slate-700 font-medium">
+                      {tx.campaigns?.title || 'Umum'}
+                    </div>
+                  </td>
+                  <td>
+                    <span className="font-bold text-primary-600">
+                      {formatRupiah(tx.amount)}
+                    </span>
+                  </td>
+                  <td>
+                    <span
+                      className={`status-badge ${
+                        tx.payment_status === 'SUCCESS'
+                          ? 'status-success'
+                          : tx.payment_status === 'PENDING'
+                          ? 'status-pending'
+                          : 'status-failed'
+                      }`}
+                    >
+                      {tx.payment_status === 'SUCCESS'
+                        ? 'Berhasil'
                         : tx.payment_status === 'PENDING'
-                        ? 'bg-yellow-100 text-yellow-700'
-                        : 'bg-red-100 text-red-700'
-                    }`}
-                  >
-                    {tx.payment_status}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center mt-2">
-                  <p className="text-xs text-navy-500 truncate max-w-[200px]">
-                    {tx.campaigns.title}
-                  </p>
-                  <p className="text-sm font-bold text-primary-600">
-                    {formatRupiah(tx.amount)}
-                  </p>
-                </div>
-              </div>
-            ))}
-            {recentTransactions.length === 0 && (
-              <div className="p-6 text-center text-navy-500 text-sm">
-                Belum ada transaksi.
-              </div>
-            )}
-          </div>
+                        ? 'Menunggu'
+                        : tx.payment_status}
+                    </span>
+                  </td>
+                  <td>
+                    <span className="text-xs text-slate-500 font-medium">
+                      {formatDate(tx.created_at)}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+              {recentTransactions.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="py-12 text-center text-slate-400">
+                    Belum ada transaksi donasi yang tercatat.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

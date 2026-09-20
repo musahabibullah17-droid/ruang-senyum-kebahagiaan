@@ -11,7 +11,7 @@ export default function GallerySection() {
             <h2 className="text-3xl md:text-4xl font-extrabold text-[#0284c7] tracking-tight">
               Galeri Kebaikan
             </h2>
-            <p className="text-base text-slate-600 leading-relaxed font-serif">
+            <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-sans">
               Ratusan penerima manfaat telah mendapatkan layanan yang sesuai dengan kebutuhannya dari bantuan yang dititipkan kepada <strong className="font-semibold text-slate-900">Ruang Senyum Kebahagiaan</strong>.
             </p>
             <div className="pt-2 flex justify-center lg:justify-start">

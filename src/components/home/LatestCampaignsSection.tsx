@@ -22,28 +22,30 @@ export default function LatestCampaignsSection({ campaigns }: LatestCampaignsSec
           </div>
           <Link
             href="/campaigns"
-            className="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors"
+            className="tf-btn-link hidden sm:inline-flex !text-sm !font-bold"
           >
-            Lihat Semua
-            <ArrowRight className="w-4 h-4" />
+            <span>Lihat Semua</span>
+            <ArrowRight className="w-4 h-4 link-icon" />
           </Link>
         </div>
 
+        {/* Desktop Grid */}
         <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 stagger-children">
           {campaigns.map((campaign) => (
             <CampaignCard key={campaign.id} campaign={campaign} />
           ))}
         </div>
-        
+
+        {/* Mobile Carousel */}
         <MobileCampaignCarousel campaigns={campaigns} />
 
         <div className="md:hidden mt-6 text-center">
           <Link
             href="/campaigns"
-            className="inline-flex items-center gap-1 text-sm font-semibold text-primary-600"
+            className="tf-btn-link inline-flex !text-sm !font-bold"
           >
-            Lihat Semua Campaign
-            <ArrowRight className="w-4 h-4" />
+            <span>Lihat Semua Campaign</span>
+            <ArrowRight className="w-4 h-4 link-icon" />
           </Link>
         </div>
       </div>

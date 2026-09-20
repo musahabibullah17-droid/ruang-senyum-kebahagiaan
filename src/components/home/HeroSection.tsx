@@ -1,49 +1,75 @@
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
 export default function HeroSection() {
+  const [activeBtn, setActiveBtn] = useState<number>(0);
+
   return (
-    <section className="relative min-h-[600px] flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-[580px] sm:min-h-[620px] flex items-center justify-center overflow-hidden rounded-b-[28px] sm:rounded-b-none shadow-lg shadow-black/15 sm:shadow-none">
       {/* Background Image */}
       <Image
         src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=2070"
         alt="Anak-anak dan masyarakat yang membutuhkan bantuan"
         fill
-        className="object-cover"
         priority
+        className="object-cover"
+        sizes="100vw"
       />
-      
-      {/* Blue Overlay */}
-      <div className="absolute inset-0 bg-primary-900/75 mix-blend-multiply" />
-      <div className="absolute inset-0 bg-gradient-to-t from-primary-900/90 via-primary-900/50 to-transparent" />
-      
-      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center space-y-8">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/20 backdrop-blur-sm rounded text-white text-xs font-bold uppercase tracking-wider">
-          Platform Donasi Terpercaya
+
+      {/* Deep Blue Overlay matching screenshot */}
+      <div className="absolute inset-0 bg-[#0c2f4d]/75 mix-blend-multiply" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0a253c]/95 via-[#0c2f4d]/60 to-[#0a253c]/50" />
+
+      {/* Hero Content */}
+      <div className="relative z-10 max-w-xl sm:max-w-3xl lg:max-w-4xl mx-auto px-5 sm:px-6 lg:px-8 pt-24 sm:pt-28 pb-14 sm:pb-20 text-center flex flex-col items-center">
+        
+        {/* Badge Pill */}
+        <div className="inline-flex items-center px-3.5 py-1 bg-black/35 backdrop-blur-md rounded text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider mb-6 sm:mb-8 border border-white/10">
+          PLATFORM DONASI TERPERCAYA
         </div>
 
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight tracking-tight shadow-sm">
-          Satu Kebaikan, Mengubah Jutaan Kehidupan.
+        {/* Hero Title */}
+        <h1 className="text-[32px] sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.18] sm:leading-tight tracking-tight shadow-sm mb-5 sm:mb-6 max-w-lg sm:max-w-2xl">
+          Satu Kebaikan, <br className="sm:hidden" />
+          Mengubah Jutaan <br className="sm:hidden" />
+          Kehidupan.
         </h1>
 
-        <p className="text-lg md:text-xl text-primary-50 leading-relaxed max-w-2xl mx-auto drop-shadow">
+        {/* Hero Subtitle */}
+        <p className="text-[13.5px] sm:text-lg text-slate-100/90 leading-relaxed max-w-md sm:max-w-2xl mx-auto drop-shadow mb-8 sm:mb-10 font-normal">
           Salurkan bantuan Anda kepada mereka yang paling membutuhkan secara transparan dan aman. Berikan harapan baru hari ini.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+        {/* Action Buttons with left-to-right fill animation */}
+        <div 
+          className="btn-pair-group flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-[340px] sm:max-w-none sm:w-auto justify-center"
+          onMouseLeave={() => setActiveBtn(0)}
+        >
           <Link
             href="/campaigns"
-            className="inline-flex items-center justify-center px-10 py-4 bg-white text-primary-700 text-base font-bold rounded-lg hover:bg-gray-50 shadow-lg transition-all hover:-translate-y-0.5"
+            onMouseEnter={() => setActiveBtn(0)}
+            onClick={() => setActiveBtn(0)}
+            className={`tf-btn btn-pair-item size-lg !rounded-lg w-full sm:w-auto ${
+              activeBtn === 0 ? 'is-active' : 'is-inactive'
+            }`}
           >
-            Mulai Berdonasi
+            <span>Mulai Berdonasi</span>
           </Link>
           <Link
             href="/campaigns"
-            className="inline-flex items-center justify-center px-10 py-4 bg-primary-600/30 backdrop-blur-sm text-white text-base font-semibold rounded-lg border border-white/50 hover:bg-primary-600/50 transition-colors"
+            onMouseEnter={() => setActiveBtn(1)}
+            onClick={() => setActiveBtn(1)}
+            className={`tf-btn btn-pair-item size-lg !rounded-lg w-full sm:w-auto ${
+              activeBtn === 1 ? 'is-active' : 'is-inactive'
+            }`}
           >
-            Lihat Campaign
+            <span>Lihat Campaign</span>
           </Link>
         </div>
+
       </div>
     </section>
   );

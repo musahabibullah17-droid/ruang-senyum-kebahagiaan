@@ -1,0 +1,47 @@
+/* Variables - Matching Ruang Senyum Kebahagiaan Brand & diproperti Architecture */
+
+:root {
+  --Primary: #0284c7;
+  --Primary-Hover: #0369a1;
+  --Primary-50: #f0f9ff;
+  --Primary-100: #e0f2fe;
+  --Primary-500: #0ea5e9;
+  --Primary-600: #0284c7;
+  --Primary-700: #0369a1;
+
+  --Secondary: #0ea5e9;
+  --Secondary-Hover: #0284c7;
+
+  --Heading: #0f172a;
+  --Heading-Light: #1e293b;
+  --Text: #475569;
+  --Text-Muted: #64748b;
+  --Text-White: #ffffff;
+
+  --White: #ffffff;
+  --Line: #e2e8f0;
+  --Background: #ffffff;
+  --Background-Alt: #f8fafc;
+
+  --Success: #16a34a;
+  --Warning: #f59e0b;
+  --Danger: #dc2626;
+
+  --Shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.04);
+  --Shadow-md: 0 4px 18px rgba(0, 0, 0, 0.08);
+  --Shadow-lg: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+  --Shadow-hover: 0 20px 30px -10px rgba(2, 132, 199, 0.18);
+
+  --Transition-fast: all 0.2s ease;
+  --Transition-normal: all 0.3s cubic-bezier(0.24, 0.74, 0.58, 1);
+  --Transition-slow: all 0.5s cubic-bezier(0.24, 0.74, 0.58, 1);
+}
+
+$primary: #0284c7;
+$primary-hover: #0369a1;
+$primary-light: #f0f9ff;
+$secondary: #0ea5e9;
+$heading: #0f172a;
+$text: #475569;
+$white: #ffffff;
+$line: #e2e8f0;

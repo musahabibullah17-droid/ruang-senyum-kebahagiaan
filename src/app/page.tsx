@@ -1,5 +1,6 @@
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import BackToTop from '@/components/common/BackToTop';
 import HeroSection from '@/components/home/HeroSection';
 import WhyChooseUsSection from '@/components/home/WhyChooseUsSection';
 import FeaturedCampaignsSection from '@/components/home/FeaturedCampaignsSection';
@@ -77,6 +78,7 @@ export default async function HomePage() {
         <CTASection />
       </main>
       <Footer />
+      <BackToTop />
     </>
   );
 }

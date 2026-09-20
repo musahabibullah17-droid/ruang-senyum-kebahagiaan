@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Search, Filter, Loader2, Plus, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Search, ChevronDown, Loader2, Plus, Edit, Trash2, Eye, EyeOff, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Campaign } from '@/types/campaign';
 import { formatRupiah, formatDateShort } from '@/lib/utils';
 import { CAMPAIGN_STATUS_LABELS } from '@/lib/constants';
+import CircularProgress from '@/components/admin/CircularProgress';
 
 export default function AdminCampaignsPage() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
@@ -46,7 +47,7 @@ export default function AdminCampaignsPage() {
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchCampaigns();
-    }, 500);
+    }, 400);
     return () => clearTimeout(timer);
   }, [fetchCampaigns]);
 
@@ -90,13 +91,13 @@ export default function AdminCampaignsPage() {
     setStatusLoading(null);
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusBadgeClass = (status: string) => {
     switch (status) {
-      case 'ACTIVE': return 'bg-green-100 text-green-700';
-      case 'COMPLETED': return 'bg-blue-100 text-blue-700';
-      case 'CLOSED': return 'bg-gray-100 text-gray-700';
-      case 'DRAFT': return 'bg-yellow-100 text-yellow-700';
-      default: return 'bg-gray-100 text-gray-700';
+      case 'ACTIVE': return 'status-active';
+      case 'COMPLETED': return 'status-completed';
+      case 'CLOSED': return 'status-closed';
+      case 'DRAFT': return 'status-draft';
+      default: return 'status-draft';
     }
   };
 
@@ -104,142 +105,171 @@ export default function AdminCampaignsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-navy-900">Manajemen Campaign</h1>
-          <p className="text-navy-500">Kelola semua program donasi</p>
+          <h1 className="text-2xl font-bold text-navy-900 tracking-tight">Manajemen Campaign</h1>
+          <p className="text-sm text-slate-500 mt-1">Kelola dan publikasikan program donasi Ruang Senyum</p>
         </div>
         <Link
           href="/master/campaigns/new"
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 shadow-md transition-all"
+          className="tf-btn primary"
         >
-          <Plus className="w-5 h-5" />
-          Buat Campaign
+          <span>Buat Campaign</span>
+          <Plus className="w-4 h-4" />
         </Link>
       </div>
 
-      {/* Filters */}
-      <div className="bg-white p-4 rounded-xl border border-navy-200 shadow-sm flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-400" />
-          <input
-            type="text"
-            placeholder="Cari judul campaign..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 border border-navy-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-          />
+      <div className="widget-box-2">
+        {/* Filters (.wd-filter) */}
+        <div className="wd-filter">
+          <div className="ip-group">
+            <Search className="icon-search w-4 h-4" />
+            <input
+              type="text"
+              placeholder="Cari judul campaign..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+          <div className="select-group">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="ALL">Semua Status</option>
+              <option value="ACTIVE">Aktif (Published)</option>
+              <option value="DRAFT">Draf (Disembunyikan)</option>
+              <option value="COMPLETED">Selesai</option>
+              <option value="CLOSED">Ditutup</option>
+            </select>
+            <ChevronDown className="select-arrow w-4 h-4" />
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-navy-400" />
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="py-2 px-3 border border-navy-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
-          >
-            <option value="ALL">Semua Status</option>
-            <option value="ACTIVE">Aktif</option>
-            <option value="DRAFT">Draf</option>
-            <option value="COMPLETED">Selesai</option>
-            <option value="CLOSED">Ditutup</option>
-          </select>
-        </div>
-      </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl border border-navy-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-navy-50 border-b border-navy-200 text-navy-600">
+        {/* Table (.wrap-table) */}
+        <div className="wrap-table">
+          <table>
+            <thead>
               <tr>
-                <th className="px-6 py-4 font-semibold">Judul Campaign</th>
-                <th className="px-6 py-4 font-semibold">Terkumpul</th>
-                <th className="px-6 py-4 font-semibold">Target</th>
-                <th className="px-6 py-4 font-semibold">Status</th>
-                <th className="px-6 py-4 font-semibold">Dibuat Pada</th>
-                <th className="px-6 py-4 font-semibold text-right">Aksi</th>
+                <th>Campaign</th>
+                <th>Terkumpul</th>
+                <th>Target</th>
+                <th>Ketercapaian</th>
+                <th>Status</th>
+                <th>Dibuat Pada</th>
+                <th className="text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-navy-100">
+            <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center">
-                    <Loader2 className="w-6 h-6 animate-spin text-primary-500 mx-auto" />
+                  <td colSpan={7} className="py-16 text-center">
+                    <Loader2 className="w-8 h-8 animate-spin text-primary-500 mx-auto" />
+                    <p className="text-sm text-slate-500 mt-2">Memuat daftar campaign...</p>
                   </td>
                 </tr>
               ) : campaigns.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-navy-500">
-                    Tidak ada campaign yang ditemukan
+                  <td colSpan={7} className="py-16 text-center text-slate-500">
+                    Tidak ada campaign yang sesuai kriteria pencarian.
                   </td>
                 </tr>
               ) : (
-                campaigns.map((campaign) => (
-                  <tr key={campaign.id} className="hover:bg-navy-50/50">
-                    <td className="px-6 py-4">
-                      <div className="font-medium text-navy-900 truncate max-w-[300px]">
-                        {campaign.title}
-                      </div>
-                      <div className="text-xs text-navy-400 mt-1">Slug: {campaign.slug}</div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="font-bold text-primary-600">
-                        {formatRupiah(campaign.current_amount)}
-                      </div>
-                      <div className="text-xs text-navy-500 mt-1">
-                        {Math.round((campaign.current_amount / campaign.goal_amount) * 100)}%
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-navy-600">
-                      {formatRupiah(campaign.goal_amount)}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${getStatusColor(campaign.status)}`}>
-                        {CAMPAIGN_STATUS_LABELS[campaign.status]}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-navy-500 text-sm">
-                      {formatDateShort(campaign.created_at)}
-                    </td>
-                    <td className="px-6 py-4 text-right space-x-2">
-                      <button
-                        onClick={() => handleToggleStatus(campaign)}
-                        disabled={statusLoading === campaign.id || ['COMPLETED', 'CLOSED'].includes(campaign.status)}
-                        className={`p-2 rounded-lg transition-colors ${
-                          ['COMPLETED', 'CLOSED'].includes(campaign.status)
-                            ? 'text-gray-300 cursor-not-allowed'
-                            : 'text-navy-500 hover:text-navy-900 hover:bg-navy-100'
-                        }`}
-                        title={campaign.status === 'ACTIVE' ? 'Sembunyikan' : 'Publish'}
-                      >
-                        {statusLoading === campaign.id ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : campaign.status === 'ACTIVE' ? (
-                          <EyeOff className="w-4 h-4" />
-                        ) : (
-                          <Eye className="w-4 h-4" />
-                        )}
-                      </button>
-                      <Link
-                        href={`/master/campaigns/${campaign.id}/edit`}
-                        className="inline-block p-2 text-primary-600 hover:text-primary-700 hover:bg-primary-50 rounded-lg transition-colors"
-                        title="Edit"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(campaign.id, campaign.title)}
-                        disabled={deleteLoading === campaign.id}
-                        className="p-2 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Hapus"
-                      >
-                        {deleteLoading === campaign.id ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <Trash2 className="w-4 h-4" />
-                        )}
-                      </button>
-                    </td>
-                  </tr>
-                ))
+                campaigns.map((campaign) => {
+                  const percentage = campaign.goal_amount > 0
+                    ? Math.round((campaign.current_amount / campaign.goal_amount) * 100)
+                    : 0;
+
+                  return (
+                    <tr key={campaign.id}>
+                      <td>
+                        <div className="campaign-media">
+                          <div className="thumbnail">
+                            {campaign.cover_image ? (
+                              <img
+                                src={campaign.cover_image}
+                                alt={campaign.title}
+                                loading="lazy"
+                              />
+                            ) : (
+                              <div className="placeholder-icon">
+                                <ImageIcon className="w-5 h-5 text-slate-400" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="info">
+                            <div className="title" title={campaign.title}>
+                              {campaign.title}
+                            </div>
+                            <div className="meta">Slug: {campaign.slug}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div className="font-bold text-primary-600 text-[15px]">
+                          {formatRupiah(campaign.current_amount)}
+                        </div>
+                      </td>
+                      <td>
+                        <span className="font-semibold text-slate-700">
+                          {formatRupiah(campaign.goal_amount)}
+                        </span>
+                      </td>
+                      <td>
+                        <CircularProgress percentage={percentage} />
+                      </td>
+                      <td>
+                        <span className={`status-badge ${getStatusBadgeClass(campaign.status)}`}>
+                          {CAMPAIGN_STATUS_LABELS[campaign.status]}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="text-xs text-slate-500 font-medium">
+                          {formatDateShort(campaign.created_at)}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="table-actions">
+                          <button
+                            onClick={() => handleToggleStatus(campaign)}
+                            disabled={statusLoading === campaign.id || ['COMPLETED', 'CLOSED'].includes(campaign.status)}
+                            className={`btn-action-icon ${
+                              ['COMPLETED', 'CLOSED'].includes(campaign.status)
+                                ? 'opacity-40 cursor-not-allowed'
+                                : ''
+                            }`}
+                            title={campaign.status === 'ACTIVE' ? 'Sembunyikan' : 'Publish'}
+                          >
+                            {statusLoading === campaign.id ? (
+                              <Loader2 className="w-4 h-4 animate-spin text-primary-600" />
+                            ) : campaign.status === 'ACTIVE' ? (
+                              <EyeOff className="w-4 h-4" />
+                            ) : (
+                              <Eye className="w-4 h-4 text-emerald-600" />
+                            )}
+                          </button>
+                          <Link
+                            href={`/master/campaigns/${campaign.id}/edit`}
+                            className="btn-action-icon"
+                            title="Edit Campaign"
+                          >
+                            <Edit className="w-4 h-4 text-primary-600" />
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(campaign.id, campaign.title)}
+                            disabled={deleteLoading === campaign.id}
+                            className="btn-action-icon delete"
+                            title="Hapus Campaign"
+                          >
+                            {deleteLoading === campaign.id ? (
+                              <Loader2 className="w-4 h-4 animate-spin text-red-500" />
+                            ) : (
+                              <Trash2 className="w-4 h-4" />
+                            )}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
               )}
             </tbody>
           </table>

@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Search, Filter, Loader2, FileText } from 'lucide-react';
+import { Search, ChevronDown, Loader2, Receipt } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { Transaction } from '@/types/transaction';
-import { formatRupiah, formatDateShort } from '@/lib/utils';
+import { formatRupiah, formatDate } from '@/lib/utils';
 import { PAYMENT_STATUS_LABELS } from '@/lib/constants';
 
 type TxWithCampaign = Transaction & { campaigns: { title: string } };
@@ -30,12 +30,10 @@ export default function AdminTransactionsPage() {
     }
 
     if (search.trim()) {
-      // Supabase doesn't easily support OR on relation fields in standard query builder without raw SQL,
-      // so we filter by donor_name or transaction_code here.
       query = query.or(`donor_name.ilike.%${search}%,transaction_code.ilike.%${search}%`);
     }
 
-    const { data, error } = await query.limit(100); // Limit to 100 recent for now
+    const { data, error } = await query.limit(100);
 
     if (error) {
       console.error('Error fetching transactions:', error);
@@ -46,20 +44,19 @@ export default function AdminTransactionsPage() {
   }, [statusFilter, search]);
 
   useEffect(() => {
-    // Debounce search
     const timer = setTimeout(() => {
       fetchTransactions();
-    }, 500);
+    }, 400);
     return () => clearTimeout(timer);
   }, [fetchTransactions]);
 
-  const getStatusColor = (status: string) => {
+  const getStatusBadgeClass = (status: string) => {
     switch (status) {
-      case 'SUCCESS': return 'bg-green-100 text-green-700';
-      case 'PENDING': return 'bg-yellow-100 text-yellow-700';
-      case 'FAILED': return 'bg-red-100 text-red-700';
-      case 'EXPIRED': return 'bg-gray-100 text-gray-700';
-      default: return 'bg-gray-100 text-gray-700';
+      case 'SUCCESS': return 'status-success';
+      case 'PENDING': return 'status-warning';
+      case 'FAILED': return 'status-failed';
+      case 'EXPIRED': return 'status-draft';
+      default: return 'status-draft';
     }
   };
 
@@ -67,100 +64,96 @@ export default function AdminTransactionsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-navy-900">Manajemen Transaksi</h1>
-          <p className="text-navy-500">Daftar semua donasi yang masuk</p>
+          <h1 className="text-2xl font-bold text-navy-900 tracking-tight">Manajemen Transaksi</h1>
+          <p className="text-sm text-slate-500 mt-1">Daftar seluruh riwayat donasi masuk dari para donatur</p>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="bg-white p-4 rounded-xl border border-navy-200 shadow-sm flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-400" />
-          <input
-            type="text"
-            placeholder="Cari nama donatur atau kode transaksi..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 border border-navy-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-          />
+      <div className="widget-box-2">
+        {/* Filters (.wd-filter) */}
+        <div className="wd-filter">
+          <div className="ip-group">
+            <Search className="icon-search w-4 h-4" />
+            <input
+              type="text"
+              placeholder="Cari nama donatur atau kode transaksi..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+          <div className="select-group">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+            >
+              <option value="ALL">Semua Status</option>
+              <option value="SUCCESS">Berhasil (Success)</option>
+              <option value="PENDING">Menunggu (Pending)</option>
+              <option value="FAILED">Gagal (Failed)</option>
+              <option value="EXPIRED">Kedaluwarsa (Expired)</option>
+            </select>
+            <ChevronDown className="select-arrow w-4 h-4" />
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-navy-400" />
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
-            className="py-2 px-3 border border-navy-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
-          >
-            <option value="ALL">Semua Status</option>
-            <option value="SUCCESS">Berhasil</option>
-            <option value="PENDING">Menunggu</option>
-            <option value="FAILED">Gagal</option>
-            <option value="EXPIRED">Kedaluwarsa</option>
-          </select>
-        </div>
-      </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl border border-navy-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm whitespace-nowrap">
-            <thead className="bg-navy-50 border-b border-navy-200 text-navy-600">
+        {/* Table (.wrap-table) */}
+        <div className="wrap-table">
+          <table>
+            <thead>
               <tr>
-                <th className="px-6 py-4 font-semibold">Transaksi</th>
-                <th className="px-6 py-4 font-semibold">Donatur</th>
-                <th className="px-6 py-4 font-semibold">Campaign</th>
-                <th className="px-6 py-4 font-semibold">Nominal</th>
-                <th className="px-6 py-4 font-semibold">Status</th>
-                <th className="px-6 py-4 font-semibold">Tanggal</th>
+                <th>Kode & Donatur</th>
+                <th>Program Campaign</th>
+                <th>Nominal</th>
+                <th>Status Pembayaran</th>
+                <th>Metode</th>
+                <th>Waktu Transaksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-navy-100">
+            <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center">
-                    <Loader2 className="w-6 h-6 animate-spin text-primary-500 mx-auto" />
+                  <td colSpan={6} className="py-16 text-center">
+                    <Loader2 className="w-8 h-8 animate-spin text-primary-500 mx-auto" />
+                    <p className="text-sm text-slate-500 mt-2">Memuat daftar transaksi...</p>
                   </td>
                 </tr>
               ) : transactions.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-navy-500">
-                    <div className="flex flex-col items-center gap-2">
-                      <FileText className="w-8 h-8 text-navy-300" />
-                      Tidak ada transaksi yang ditemukan
-                    </div>
+                  <td colSpan={6} className="py-16 text-center text-slate-500">
+                    Tidak ada transaksi yang cocok dengan pencarian.
                   </td>
                 </tr>
               ) : (
                 transactions.map((tx) => (
-                  <tr key={tx.id} className="hover:bg-navy-50/50">
-                    <td className="px-6 py-4">
-                      <div className="font-medium text-navy-900">{tx.transaction_code}</div>
-                      <div className="text-xs text-navy-400 mt-1">Midtrans: {tx.midtrans_order_id}</div>
+                  <tr key={tx.id}>
+                    <td>
+                      <div className="font-semibold text-navy-900">{tx.donor_name}</div>
+                      <div className="text-xs font-mono text-slate-400 mt-0.5">{tx.transaction_code}</div>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="font-medium text-navy-900">
-                        {tx.is_anonymous ? 'Hamba Allah (Anonim)' : tx.donor_name}
-                      </div>
-                      <div className="text-xs text-navy-500 mt-1">{tx.donor_email}</div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="text-navy-900 truncate max-w-[200px]">
-                        {tx.campaigns.title}
+                    <td>
+                      <div className="max-w-[280px] truncate font-medium text-slate-700">
+                        {tx.campaigns?.title || 'Umum'}
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="font-bold text-primary-600">
+                    <td>
+                      <span className="font-bold text-primary-600">
                         {formatRupiah(tx.amount)}
-                      </div>
-                      <div className="text-xs text-navy-500 mt-1">{tx.payment_method || '-'}</div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${getStatusColor(tx.payment_status)}`}>
-                        {PAYMENT_STATUS_LABELS[tx.payment_status]}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-navy-500 text-sm">
-                      {formatDateShort(tx.created_at)}
+                    <td>
+                      <span className={`status-badge ${getStatusBadgeClass(tx.payment_status)}`}>
+                        {PAYMENT_STATUS_LABELS[tx.payment_status] || tx.payment_status}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="text-xs uppercase font-semibold text-slate-600 px-2 py-1 bg-slate-100 rounded-md">
+                        {tx.payment_method || 'Midtrans'}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="text-xs text-slate-500 font-medium">
+                        {formatDate(tx.created_at)}
+                      </span>
                     </td>
                   </tr>
                 ))

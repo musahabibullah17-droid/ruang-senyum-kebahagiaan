@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import "@/styles/main.scss";
 import { APP_NAME, APP_DESCRIPTION } from "@/lib/constants";
 import BottomNav from "@/components/layout/BottomNav";
 import NextTopLoader from "nextjs-toploader";

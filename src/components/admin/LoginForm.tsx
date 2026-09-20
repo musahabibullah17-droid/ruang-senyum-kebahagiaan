@@ -2,13 +2,16 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
+import { Loader2, ArrowRight, Lock, Mail, AlertCircle } from 'lucide-react';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [activeBtn, setActiveBtn] = useState<number>(0);
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -29,7 +32,6 @@ export default function LoginForm() {
       return;
     }
 
-    // Role check happens on the server via proxy.ts, but let's do a quick client check
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       const { data: profile, error: profileError } = await supabase
@@ -46,11 +48,11 @@ export default function LoginForm() {
       }
 
       if (profile?.role === 'admin') {
-        router.push('/master/campaigns');
+        router.push('/master');
         router.refresh();
       } else {
         await supabase.auth.signOut();
-        setError('Akses ditolak: Anda bukan admin.');
+        setError('Akses ditolak: Akun Anda tidak memiliki hak akses administrator.');
       }
     }
     
@@ -58,55 +60,74 @@ export default function LoginForm() {
   };
 
   return (
-    <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+    <form className="space-y-5" onSubmit={handleLogin}>
       {error && (
-        <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm text-center">
-          {error}
+        <div className="p-3.5 bg-red-50 text-red-700 rounded-xl border border-red-200 text-sm flex items-start gap-2.5">
+          <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-red-500" />
+          <span>{error}</span>
         </div>
       )}
-      <div className="rounded-md shadow-sm -space-y-px">
-        <div>
-          <label htmlFor="email-address" className="sr-only">
-            Email
-          </label>
+
+      <div className="box-fieldset">
+        <label htmlFor="email-address">Alamat Email</label>
+        <div className="relative">
           <input
             id="email-address"
             name="email"
             type="email"
             autoComplete="email"
             required
-            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 focus:z-10 sm:text-sm"
-            placeholder="Email address"
+            placeholder="admin@ruangsenyum.org"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-        <div>
-          <label htmlFor="password" className="sr-only">
-            Password
-          </label>
+      </div>
+
+      <div className="box-fieldset">
+        <label htmlFor="password">Kata Sandi</label>
+        <div className="relative">
           <input
             id="password"
             name="password"
             type="password"
             autoComplete="current-password"
             required
-            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 focus:z-10 sm:text-sm"
-            placeholder="Password"
+            placeholder="••••••••••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
       </div>
 
-      <div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:bg-gray-400"
+      <div className="pt-3">
+        <div 
+          className="btn-campaign-pair"
+          onMouseLeave={() => setActiveBtn(0)}
         >
-          {loading ? 'Memproses...' : 'Sign in'}
-        </button>
+          <button
+            type="submit"
+            disabled={loading}
+            onMouseEnter={() => setActiveBtn(0)}
+            className={`btn-campaign-item !h-11 ${activeBtn === 0 ? 'is-active' : 'is-inactive'}`}
+          >
+            {loading ? (
+              <Loader2 className="w-5 h-5 animate-spin mx-auto" />
+            ) : (
+              <>
+                <span>Masuk ke Dashboard</span>
+                <ArrowRight className="w-4 h-4" />
+              </>
+            )}
+          </button>
+          <Link
+            href="/"
+            onMouseEnter={() => setActiveBtn(1)}
+            className={`btn-campaign-item !h-11 ${activeBtn === 1 ? 'is-active' : 'is-inactive'}`}
+          >
+            <span>← Kembali ke Beranda</span>
+          </Link>
+        </div>
       </div>
     </form>
   );

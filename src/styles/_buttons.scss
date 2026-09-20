@@ -1,0 +1,586 @@
+/* Buttons Style & Left-to-Right Fill Animation Across All Buttons */
+@use "./variables" as *;
+
+/* Base Button:
+   - Belum aktif: background transparan, outline biru, tulisan biru.
+   - Ketika aktif / di-hover: background fill biru meluncur dari KIRI ke KANAN, tulisan putih.
+*/
+.tf-btn {
+  font-size: 14.5px;
+  line-height: 22px;
+  font-weight: 700;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  gap: 8px;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  cursor: pointer;
+  border-radius: 8px;
+  text-decoration: none;
+  
+  /* State Default (Belum aktif): transparan, outline biru, tulisan biru */
+  background-color: transparent !important;
+  border: 1.5px solid var(--Primary) !important;
+  color: var(--Primary) !important;
+  transition: border-color 0.4s cubic-bezier(0.24, 0.74, 0.58, 1), box-shadow 0.4s cubic-bezier(0.24, 0.74, 0.58, 1), transform 0.2s ease;
+
+  /* Layer Fill animasi meluncur dari KIRI ke KANAN */
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: var(--Primary);
+    transition: width 0.4s cubic-bezier(0.24, 0.74, 0.58, 1);
+    z-index: -1;
+  }
+
+  span,
+  .btn-icon,
+  i,
+  svg {
+    position: relative;
+    z-index: 2;
+    transition: color 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* State Aktif / Hover: fill meluncur dari KIRI ke KANAN, teks jadi putih */
+  &:hover,
+  &:active,
+  &.active {
+    color: #ffffff !important;
+    border-color: var(--Primary) !important;
+    box-shadow: 0 6px 20px rgba(2, 132, 199, 0.28);
+    transform: translateY(-1px);
+
+    &::after {
+      width: 100%;
+    }
+
+    span,
+    .btn-icon,
+    i,
+    svg {
+      color: #ffffff !important;
+      stroke: #ffffff !important;
+    }
+  }
+
+  /* Varian Outline Border */
+  &.style-border {
+    border: 1.5px solid var(--Primary) !important;
+    color: var(--Primary) !important;
+
+    &::after {
+      background-color: var(--Primary);
+    }
+
+    /* Warna border putih (Button Tidak Aktif pada kontainer gelap / Hero / CTA) */
+    &.color-white {
+      border: 1.5px solid rgba(255, 255, 255, 0.85) !important;
+      background-color: transparent !important;
+      color: #ffffff !important;
+
+      &::after {
+        background-color: #ffffff;
+        width: 0;
+      }
+
+      span,
+      .btn-icon,
+      i,
+      svg {
+        color: #ffffff !important;
+        stroke: #ffffff !important;
+      }
+
+      &:hover,
+      &:active,
+      &.active {
+        border-color: #ffffff !important;
+        color: var(--Primary) !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        transform: translateY(-1px);
+
+        &::after {
+          width: 100% !important;
+          background-color: #ffffff;
+        }
+
+        span,
+        .btn-icon,
+        i,
+        svg {
+          color: var(--Primary) !important;
+          stroke: var(--Primary) !important;
+        }
+      }
+    }
+  }
+
+  /* Varian Putih (Button Aktif pada kontainer gelap / Hero / CTA: Background Putih, Teks Biru) */
+  &.style-white {
+    border: 1.5px solid #ffffff !important;
+    background-color: #ffffff !important;
+    color: var(--Primary) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+
+    &::after {
+      background-color: #ffffff;
+      width: 100%;
+    }
+
+    span,
+    .btn-icon,
+    i,
+    svg {
+      color: var(--Primary) !important;
+      stroke: var(--Primary) !important;
+    }
+
+    &:hover,
+    &:active,
+    &.active {
+      color: var(--Primary) !important;
+      border-color: #ffffff !important;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+      transform: translateY(-1px);
+
+      &::after {
+        width: 100% !important;
+        background-color: #ffffff;
+      }
+
+      span,
+      .btn-icon,
+      i,
+      svg {
+        color: var(--Primary) !important;
+        stroke: var(--Primary) !important;
+      }
+    }
+  }
+
+  /* Varian Solid (jika diinginkan tampil aktif terisi biru sejak awal) */
+  &.style-solid {
+    background-color: var(--Primary) !important;
+    color: #ffffff !important;
+    border-color: var(--Primary) !important;
+
+    &::after {
+      background-color: var(--Primary-Hover);
+    }
+
+    &:hover,
+    &:active,
+    &.active {
+      border-color: var(--Primary-Hover) !important;
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.35);
+
+      &::after {
+        width: 100%;
+      }
+    }
+  }
+
+  /* Variasi Ukuran */
+  &.size-sm {
+    height: 38px;
+    padding: 0 16px;
+    font-size: 13px;
+  }
+
+  &.size-lg {
+    height: 50px;
+    padding: 0 28px;
+    font-size: 15.5px;
+  }
+
+  &:disabled,
+  &[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+
+    &::after {
+      width: 0 !important;
+    }
+  }
+}
+
+/* ==========================================================================
+   Pasangan 2 Button (Hero Section & CTA Section)
+   - Jika ada 2 button:
+     * Ketika AKTIF: background putih, teks biru (seperti tombol atas di gambar).
+     * Ketika TIDAK AKTIF: background transparan, outline putih, teks putih (seperti tombol bawah di gambar).
+     * Animasi: fill meluncur dari KIRI ke KANAN saat bertransisi.
+   ========================================================================== */
+.btn-pair-group {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+
+  .btn-pair-item {
+    transition: all 0.35s cubic-bezier(0.24, 0.74, 0.58, 1);
+
+    /* State Default TIDAK AKTIF: transparan, outline putih, teks putih */
+    &.is-inactive {
+      background-color: transparent !important;
+      border: 1.5px solid rgba(255, 255, 255, 0.85) !important;
+      color: #ffffff !important;
+      box-shadow: none !important;
+
+      &::after {
+        width: 0 !important;
+        background-color: #ffffff;
+      }
+
+      span,
+      .btn-icon,
+      i,
+      svg {
+        color: #ffffff !important;
+        stroke: #ffffff !important;
+      }
+    }
+
+    /* State AKTIF: background putih, teks biru */
+    &.is-active {
+      background-color: #ffffff !important;
+      border: 1.5px solid #ffffff !important;
+      color: var(--Primary) !important;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.14) !important;
+
+      &::after {
+        width: 100% !important;
+        background-color: #ffffff;
+      }
+
+      span,
+      .btn-icon,
+      i,
+      svg {
+        color: var(--Primary) !important;
+        stroke: var(--Primary) !important;
+      }
+    }
+  }
+
+  /* Hover fallback murni CSS jika mouse diarahkan ke tombol kedua */
+  &:has(.btn-pair-item:nth-child(2):hover) {
+    .btn-pair-item:nth-child(1) {
+      background-color: transparent !important;
+      border-color: rgba(255, 255, 255, 0.85) !important;
+      color: #ffffff !important;
+      box-shadow: none !important;
+
+      &::after {
+        width: 0 !important;
+      }
+
+      span, i, svg {
+        color: #ffffff !important;
+        stroke: #ffffff !important;
+      }
+    }
+
+    .btn-pair-item:nth-child(2) {
+      background-color: #ffffff !important;
+      border-color: #ffffff !important;
+      color: var(--Primary) !important;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.14) !important;
+
+      &::after {
+        width: 100% !important;
+        background-color: #ffffff;
+      }
+
+      span, i, svg {
+        color: var(--Primary) !important;
+        stroke: var(--Primary) !important;
+      }
+    }
+  }
+}
+
+/* ==========================================================================
+   Pasangan 2 Button pada Campaign (Latar Terang / Kartu Putih)
+   - Tombol AKTIF (seperti 'Donasi Sekarang'):
+     * Background biru solid, border biru, tulisan putih.
+   - Tombol TIDAK AKTIF (seperti 'Bagikan Campaign'):
+     * Background transparan, outline biru, tulisan biru.
+   - Ketika AKTIF / Di-hover:
+     * Animasi background fill meluncur dari KIRI ke KANAN (width: 0% -> 100%).
+     * Warna tulisan dan icon bertransisi menjadi kontras.
+   ========================================================================== */
+.btn-campaign-pair {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+
+  .btn-campaign-item {
+    width: 100%;
+    height: 48px;
+    font-size: 15px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.35s cubic-bezier(0.24, 0.74, 0.58, 1);
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.15);
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 100%;
+      background-color: var(--Primary);
+      transition: width 0.4s cubic-bezier(0.24, 0.74, 0.58, 1);
+      z-index: -1;
+    }
+
+    span,
+    .btn-icon,
+    i,
+    svg {
+      position: relative;
+      z-index: 2;
+      transition: color 0.3s ease, stroke 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    /* State Default: TIDAK AKTIF (seperti 'Bagikan Campaign')
+       - Background transparan, outline biru, tulisan & ikon biru
+    */
+    &.is-inactive {
+      background-color: transparent !important;
+      border: 1.5px solid var(--Primary) !important;
+      color: var(--Primary) !important;
+      box-shadow: none !important;
+
+      &::after {
+        width: 0 !important;
+        background-color: var(--Primary);
+      }
+
+      span,
+      .btn-icon,
+      i,
+      svg {
+        color: var(--Primary) !important;
+        stroke: var(--Primary) !important;
+      }
+    }
+
+    /* State Default: AKTIF (seperti 'Donasi Sekarang')
+       - Background biru, outline biru, tulisan & ikon putih
+    */
+    &.is-active {
+      background-color: var(--Primary) !important;
+      border: 1.5px solid var(--Primary) !important;
+      color: #ffffff !important;
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.28) !important;
+
+      &::after {
+        width: 100% !important;
+        background-color: var(--Primary);
+      }
+
+      span,
+      .btn-icon,
+      i,
+      svg {
+        color: #ffffff !important;
+        stroke: #ffffff !important;
+      }
+    }
+
+    /* Hover pada item tidak aktif: animasi fill meluncur dari KIRI ke KANAN menjadi aktif */
+    &:hover,
+    &:active {
+      color: #ffffff !important;
+      border-color: var(--Primary) !important;
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.35) !important;
+      transform: translateY(-1px);
+
+      &::after {
+        width: 100% !important;
+        background-color: var(--Primary);
+      }
+
+      span,
+      .btn-icon,
+      i,
+      svg {
+        color: #ffffff !important;
+        stroke: #ffffff !important;
+      }
+    }
+  }
+
+  /* Jika kursor mengarah ke tombol kedua (Bagikan Campaign), tombol pertama beralih menjadi tidak aktif */
+  &:has(.btn-campaign-item:nth-child(2):hover) {
+    .btn-campaign-item:nth-child(1) {
+      background-color: transparent !important;
+      border-color: var(--Primary) !important;
+      color: var(--Primary) !important;
+      box-shadow: none !important;
+
+      &::after {
+        width: 0 !important;
+      }
+
+      span, i, svg {
+        color: var(--Primary) !important;
+        stroke: var(--Primary) !important;
+      }
+    }
+
+    .btn-campaign-item:nth-child(2) {
+      background-color: var(--Primary) !important;
+      border-color: var(--Primary) !important;
+      color: #ffffff !important;
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.28) !important;
+
+      &::after {
+        width: 100% !important;
+        background-color: var(--Primary);
+      }
+
+      span, i, svg {
+        color: #ffffff !important;
+        stroke: #ffffff !important;
+      }
+    }
+  }
+}
+
+/* Button Donasi Sekarang di Navbar */
+.btn-nav-donate {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13.5px;
+  font-weight: 700;
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 8px;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+
+  /* State belum aktif: background transparan, outline biru, tulisan biru */
+  background-color: transparent !important;
+  border: 1.5px solid var(--Primary) !important;
+  color: var(--Primary) !important;
+  transition: border-color 0.4s cubic-bezier(0.24, 0.74, 0.58, 1), box-shadow 0.4s cubic-bezier(0.24, 0.74, 0.58, 1);
+
+  /* Animasi sliding fill dari KIRI ke KANAN */
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: var(--Primary);
+    transition: width 0.4s cubic-bezier(0.24, 0.74, 0.58, 1);
+    z-index: -1;
+  }
+
+  span {
+    position: relative;
+    z-index: 2;
+    transition: color 0.3s ease;
+  }
+
+  /* State aktif: saat hover, klik, atau class active */
+  &:hover,
+  &:active,
+  &.active {
+    color: #ffffff !important;
+    border-color: var(--Primary) !important;
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);
+
+    &::after {
+      width: 100%;
+    }
+
+    span {
+      color: #ffffff !important;
+    }
+  }
+}
+
+/* Link Button dengan Garis Animasi */
+.tf-btn-link {
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--Primary);
+  gap: 6px;
+  width: max-content;
+  text-decoration: none;
+  transition: color 0.3s ease;
+
+  span {
+    position: relative;
+    &::after {
+      position: absolute;
+      content: "";
+      width: 0;
+      left: 0;
+      bottom: -2px;
+      background: var(--Primary);
+      height: 2px;
+      transition: width 0.3s cubic-bezier(0.24, 0.74, 0.58, 1);
+    }
+  }
+
+  .link-icon,
+  svg,
+  i {
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  &:hover,
+  &:active,
+  .group:hover & {
+    color: var(--Primary-Hover);
+
+    span::after {
+      width: 100%;
+    }
+
+    .link-icon,
+    svg,
+    i {
+      transform: translateX(5px);
+    }
+  }
+}

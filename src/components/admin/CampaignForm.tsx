@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Loader2, Upload, X, ArrowUpRight, Check, AlertCircle } from 'lucide-react';
+import { Loader2, Upload, X, ArrowUpRight, AlertCircle } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
-import { generateSlug, cn } from '@/lib/utils';
-import { SUPABASE_STORAGE_BUCKET, MAX_IMAGE_SIZE } from '@/lib/constants';
+import { generateSlug } from '@/lib/utils';
+import { MAX_IMAGE_SIZE } from '@/lib/constants';
 import { Campaign } from '@/types/campaign';
 
 interface CampaignFormProps {
@@ -19,10 +19,11 @@ export default function CampaignForm({ initialData, isEdit }: CampaignFormProps)
   const [error, setError] = useState('');
   
   const [title, setTitle] = useState(initialData?.title || '');
-  const [goalAmount, setGoalAmount] = useState(initialData?.goal_amount?.toString() || '');
+  const [goalAmount, setGoalAmount] = useState(initialData?.goal_amount ? initialData.goal_amount.toString() : '');
   const [description, setDescription] = useState(initialData?.description || '');
-  const [status, setStatus] = useState(initialData?.status || 'DRAFT');
+  const [status, setStatus] = useState<Campaign['status']>(initialData?.status || 'DRAFT');
   
+  // Image handling
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverPreview, setCoverPreview] = useState(initialData?.cover_image || '');
 
@@ -31,12 +32,13 @@ export default function CampaignForm({ initialData, isEdit }: CampaignFormProps)
     if (!file) return;
 
     if (file.size > MAX_IMAGE_SIZE) {
-      alert('Ukuran file maksimal 5MB');
+      setError('Ukuran gambar maksimal 5MB');
       return;
     }
 
     setCoverFile(file);
     setCoverPreview(URL.createObjectURL(file));
+    setError('');
   };
 
   const removeCover = () => {
@@ -44,25 +46,24 @@ export default function CampaignForm({ initialData, isEdit }: CampaignFormProps)
     setCoverPreview('');
   };
 
-  const uploadImage = async (file: File, campaignId: string): Promise<string | null> => {
-    const supabase = createClient();
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${campaignId}/cover_${Date.now()}.${fileExt}`;
+  const uploadImage = async (file: File, slugName: string): Promise<string | null> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folder', 'campaigns');
+    formData.append('customFileName', slugName);
 
-    const { data, error } = await supabase.storage
-      .from(SUPABASE_STORAGE_BUCKET)
-      .upload(fileName, file, { upsert: true });
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+    });
 
-    if (error) {
-      console.error('Upload error:', error);
-      throw new Error('Gagal mengupload gambar sampul');
+    const data = await res.json();
+    if (!res.ok) {
+      console.error('Upload error:', data);
+      throw new Error(data.error || 'Gagal mengupload gambar sampul ke Cloudflare R2');
     }
 
-    const { data: { publicUrl } } = supabase.storage
-      .from(SUPABASE_STORAGE_BUCKET)
-      .getPublicUrl(fileName);
-
-    return publicUrl;
+    return data.url;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -103,8 +104,8 @@ export default function CampaignForm({ initialData, isEdit }: CampaignFormProps)
         campaignId = newCampaign.id;
       }
 
-      if (coverFile && campaignId) {
-        finalCoverUrl = await uploadImage(coverFile, campaignId) || undefined;
+      if (coverFile) {
+        finalCoverUrl = (await uploadImage(coverFile, slug)) || undefined;
       }
 
       const updatePayload: Partial<Campaign> = {
@@ -133,9 +134,10 @@ export default function CampaignForm({ initialData, isEdit }: CampaignFormProps)
       router.push('/master/campaigns');
       router.refresh();
       
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err.message || 'Terjadi kesalahan saat menyimpan campaign');
+      const message = err instanceof Error ? err.message : 'Terjadi kesalahan saat menyimpan campaign';
+      setError(message);
       setLoading(false);
     }
   };

@@ -1,0 +1,31 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # Berjalan otomatis setiap 3 hari sekali pada jam 00:00 UTC
+    - cron: '0 0 */3 * *'
+  workflow_dispatch:
+    # Memungkinkan eksekusi manual melalui tombol "Run workflow"
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        env:
+          SUPABASE_URL: "https://zuotpkitkbhiynsoavos.supabase.co"
+          SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp1b3Rwa2l0a2JoaXluc29hdm9zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk2MTYxMTMsImV4cCI6MjEwNTE5MjExM30.oSR77FtfWfppg9vwCPOMnZFW1vl0OKPaCFgpXUHd_lg"
+        run: |
+          echo "Melakukan ping ke Supabase untuk menjaga project tetap aktif..."
+          
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            "$SUPABASE_URL/rest/v1/")
+            
+          if [ "$HTTP_STATUS" -eq 200 ] || [ "$HTTP_STATUS" -eq 400 ] || [ "$HTTP_STATUS" -eq 401 ] || [ "$HTTP_STATUS" -eq 404 ]; then
+            echo "Ping berhasil! Supabase merespons dengan status $HTTP_STATUS."
+          else
+            echo "Ping mungkin gagal. HTTP Status: $HTTP_STATUS"
+            exit 1
+          fi

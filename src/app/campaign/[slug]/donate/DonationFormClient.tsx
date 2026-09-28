@@ -71,13 +71,15 @@ export default function DonationFormClient({ campaign }: DonationFormClientProps
       }
 
       const clientKey = process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || '';
-      // Assuming it's sandbox if client key contains 'SB-'
-      const isSandbox = clientKey.includes('SB-');
+      const snapUrl = process.env.NEXT_PUBLIC_MIDTRANS_SNAP_URL;
       
+      if (!snapUrl) {
+        reject(new Error('NEXT_PUBLIC_MIDTRANS_SNAP_URL is not defined in environment variables'));
+        return;
+      }
+
       const script = document.createElement('script');
-      script.src = isSandbox
-        ? 'https://app.sandbox.midtrans.com/snap/snap.js'
-        : 'https://app.midtrans.com/snap/snap.js';
+      script.src = snapUrl;
       script.setAttribute('data-client-key', clientKey);
       script.onload = () => resolve();
       script.onerror = () => reject(new Error('Failed to load Midtrans'));

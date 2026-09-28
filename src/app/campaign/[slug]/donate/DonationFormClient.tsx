@@ -71,12 +71,16 @@ export default function DonationFormClient({ campaign }: DonationFormClientProps
       }
 
       const clientKey = process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || '';
-      const snapUrl = process.env.NEXT_PUBLIC_MIDTRANS_SNAP_URL;
-      
-      if (!snapUrl) {
-        reject(new Error('NEXT_PUBLIC_MIDTRANS_SNAP_URL is not defined in environment variables'));
+      if (!clientKey) {
+        reject(new Error('NEXT_PUBLIC_MIDTRANS_CLIENT_KEY is not defined in environment variables'));
         return;
       }
+
+      // Deteksi otomatis environment berdasarkan awalan Client Key
+      const isSandbox = clientKey.startsWith('SB-');
+      const snapUrl = isSandbox 
+        ? 'https://app.sandbox.midtrans.com/snap/snap.js' 
+        : 'https://app.midtrans.com/snap/snap.js';
 
       const script = document.createElement('script');
       script.src = snapUrl;

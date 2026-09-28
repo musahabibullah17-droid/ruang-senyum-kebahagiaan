@@ -7,10 +7,10 @@ const supabase = createClient(supabaseUrl, serviceRoleKey);
 
 async function createAdmin() {
   const { data, error } = await supabase.auth.admin.createUser({
-    email: 'musahabibullah3@gmail.com',
-    password: 'konfirmasi17',
+    email: 'superadmin@gmail.com',
+    password: 'admin123',
     email_confirm: true,
-    user_metadata: { role: 'admin', full_name: 'Admin Musa' }
+    user_metadata: { role: 'admin', full_name: 'Super Admin' }
   });
 
   if (error) {

@@ -70,14 +70,15 @@ export default function DonationFormClient({ campaign }: DonationFormClientProps
         return;
       }
 
+      const clientKey = process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || '';
+      // Assuming it's sandbox if client key contains 'SB-'
+      const isSandbox = clientKey.includes('SB-');
+      
       const script = document.createElement('script');
-      script.src = process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY
-        ? `https://app.sandbox.midtrans.com/snap/snap.js`
-        : `https://app.sandbox.midtrans.com/snap/snap.js`;
-      script.setAttribute(
-        'data-client-key',
-        process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || ''
-      );
+      script.src = isSandbox
+        ? 'https://app.sandbox.midtrans.com/snap/snap.js'
+        : 'https://app.midtrans.com/snap/snap.js';
+      script.setAttribute('data-client-key', clientKey);
       script.onload = () => resolve();
       script.onerror = () => reject(new Error('Failed to load Midtrans'));
       document.head.appendChild(script);

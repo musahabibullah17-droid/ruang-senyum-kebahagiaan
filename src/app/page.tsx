@@ -67,7 +67,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar initialTransparent={true} />
       <main className="flex-1">
         <HeroSection />
         <WhyChooseUsSection />

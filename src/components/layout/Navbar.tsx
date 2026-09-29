@@ -6,25 +6,27 @@ import { useRouter, usePathname } from 'next/navigation';
 import { Search } from 'lucide-react';
 import Logo from '@/components/ui/Logo';
 
-export default function Navbar() {
+interface NavbarProps {
+  initialTransparent?: boolean;
+}
+
+export default function Navbar({ initialTransparent = false }: NavbarProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [stickyState, setStickyState] = useState<'normal' | 'prepared' | 'sticky'>('normal');
   const router = useRouter();
   const pathname = usePathname();
 
-  const isHomePage = pathname === '/';
+  const isHomePage = pathname ? pathname === '/' : initialTransparent;
   const isTransparent = isHomePage && stickyState === 'normal';
 
   // Scroll detection for transparent to sticky transition
   useEffect(() => {
-    let animationFrameId: number;
-
     const handleScroll = () => {
       const scrollY = window.scrollY;
 
-      if (scrollY > 300) {
+      if (scrollY > 160) {
         setStickyState('sticky');
-      } else if (scrollY > 120) {
+      } else if (scrollY > 70) {
         setStickyState('prepared');
       } else {
         setStickyState('normal');
@@ -32,10 +34,10 @@ export default function Navbar() {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    animationFrameId = window.requestAnimationFrame(handleScroll);
+    // Immediate check on mount
+    handleScroll();
 
     return () => {
-      window.cancelAnimationFrame(animationFrameId);
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);

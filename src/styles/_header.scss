@@ -42,7 +42,7 @@
   }
 
   /* Transparent Navbar state (before scroll on homepage) */
-  &.header-transparent:not(.is-sticky) {
+  &.header-transparent {
     position: absolute;
     top: 0;
     left: 0;

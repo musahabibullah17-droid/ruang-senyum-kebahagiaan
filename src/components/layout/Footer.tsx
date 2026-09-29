@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Heart, Mail, MapPin } from 'lucide-react';
+import { Heart, Mail, MapPin, Phone } from 'lucide-react';
 import { APP_NAME } from '@/lib/constants';
 import Logo from '@/components/ui/Logo';
 
@@ -62,14 +62,32 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
               Kontak
             </h3>
-            <ul className="space-y-3">
-              <li className="flex items-center gap-2 text-sm text-navy-400">
-                <Mail className="w-4 h-4 text-primary-400 shrink-0" />
-                <span>info@ruangsenyumkebahagiaan.id</span>
+            <ul className="space-y-3.5">
+              <li>
+                <a
+                  href="https://wa.me/6282232552327"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2.5 text-sm text-navy-400 hover:text-primary-400 transition-colors group"
+                >
+                  <Phone className="w-4 h-4 text-primary-400 shrink-0 group-hover:scale-110 transition-transform" />
+                  <span>0822-3255-2327 (WhatsApp)</span>
+                </a>
               </li>
-              <li className="flex items-start gap-2 text-sm text-navy-400">
+              <li>
+                <a
+                  href="mailto:yayasanruangsenyumkebahagiaan@gmail.com"
+                  className="flex items-start gap-2.5 text-sm text-navy-400 hover:text-primary-400 transition-colors group"
+                >
+                  <Mail className="w-4 h-4 text-primary-400 mt-0.5 shrink-0 group-hover:scale-110 transition-transform" />
+                  <span className="break-all">yayasanruangsenyumkebahagiaan@gmail.com</span>
+                </a>
+              </li>
+              <li className="flex items-start gap-2.5 text-sm text-navy-400">
                 <MapPin className="w-4 h-4 text-primary-400 mt-0.5 shrink-0" />
-                <span>Jakarta, Indonesia</span>
+                <span className="leading-relaxed">
+                  Jl. Mr. Wahid, Wirowongso, Ajung, Jember, Jawa Timur
+                </span>
               </li>
             </ul>
           </div>

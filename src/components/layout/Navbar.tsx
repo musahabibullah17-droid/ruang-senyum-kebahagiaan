@@ -16,7 +16,12 @@ export default function Navbar({ initialTransparent = false }: NavbarProps) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const isHomePage = pathname ? pathname === '/' : initialTransparent;
+  const isHomePage = Boolean(
+    initialTransparent ||
+    pathname === '/' ||
+    pathname === '' ||
+    (pathname && pathname.replace(/\/$/, '') === '')
+  );
   const isTransparent = isHomePage && stickyState === 'normal';
 
   // Scroll detection for transparent to sticky transition

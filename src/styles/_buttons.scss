@@ -512,10 +512,13 @@
     z-index: -1;
   }
 
-  span {
+  span,
+  .btn-icon,
+  svg,
+  i {
     position: relative;
     z-index: 2;
-    transition: color 0.3s ease;
+    transition: color 0.3s ease, fill 0.3s ease, stroke 0.3s ease;
   }
 
   /* State aktif: saat hover, klik, atau class active */
@@ -530,8 +533,13 @@
       width: 100%;
     }
 
-    span {
+    span,
+    .btn-icon,
+    svg,
+    i {
       color: #ffffff !important;
+      fill: #ffffff !important;
+      stroke: #ffffff !important;
     }
   }
 }
@@ -584,3 +592,42 @@
     }
   }
 }
+
+/* Tombol Akun & Layanan di Navbar Desktop */
+.btn-nav-user {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13.5px;
+  font-weight: 700;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 8px;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  gap: 6px;
+  border: 1.5px solid rgba(203, 213, 225, 0.8);
+  background-color: #ffffff;
+  color: #1e293b;
+  transition: all 0.25s ease;
+
+  svg {
+    width: 15px;
+    height: 15px;
+    color: #64748b;
+    transition: color 0.25s ease;
+  }
+
+  &:hover,
+  &.active {
+    border-color: var(--Primary) !important;
+    color: var(--Primary) !important;
+    background-color: var(--Primary-50) !important;
+
+    svg {
+      color: var(--Primary) !important;
+    }
+  }
+}
+

@@ -41,6 +41,11 @@ export default function Footer() {
                     Semua Campaign
                   </Link>
                 </li>
+                <li>
+                  <Link href="/user/bantuan" className="text-sm text-navy-400 hover:text-primary-400 transition-colors">
+                    Pusat Bantuan
+                  </Link>
+                </li>
               </ul>
               <ul className="space-y-3">
                 <li>
@@ -51,6 +56,11 @@ export default function Footer() {
                 <li>
                   <Link href="/cara-donasi" className="text-sm text-navy-400 hover:text-primary-400 transition-colors">
                     Cara Donasi
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/user/syarat-ketentuan" className="text-sm text-navy-400 hover:text-primary-400 transition-colors">
+                    Syarat & Ketentuan
                   </Link>
                 </li>
               </ul>
@@ -95,7 +105,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-navy-800 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="border-t border-navy-800 py-6 pb-24 sm:pb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-xs text-navy-500">
             © {currentYear} {APP_NAME}. Semua hak dilindungi.
           </p>

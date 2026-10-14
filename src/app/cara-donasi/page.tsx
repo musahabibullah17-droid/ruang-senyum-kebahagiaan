@@ -75,8 +75,8 @@ export default function CaraDonasiPage() {
               <p className="text-sky-100 mb-8 max-w-xl mx-auto">
                 Jika Anda mengalami kesulitan atau memiliki pertanyaan seputar donasi, jangan ragu untuk menghubungi layanan dukungan kami.
               </p>
-              <a 
-                href="mailto:support@ruangsenyum.org" 
+              <a
+                href="mailto:support@ruangsenyum.org"
                 className="inline-flex items-center justify-center px-8 py-3 bg-white text-[#0284c7] font-bold rounded-full hover:bg-sky-50 transition-colors"
               >
                 Hubungi Bantuan

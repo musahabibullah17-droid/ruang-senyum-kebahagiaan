@@ -115,17 +115,17 @@ export default function Navbar({ initialTransparent = false }: NavbarProps) {
             </Link>
 
             <Link
-              href="/about"
-              className={`nav-link ${pathname === '/about' ? 'active' : ''}`}
-            >
-              Tentang Kami
-            </Link>
-
-            <Link
               href="/cara-donasi"
               className={`nav-link ${pathname === '/cara-donasi' ? 'active' : ''}`}
             >
               Cara Donasi
+            </Link>
+
+            <Link
+              href="/user"
+              className={`nav-link ${pathname.startsWith('/user') || pathname.startsWith('/layanan') ? 'active' : ''}`}
+            >
+              Layanan Kami
             </Link>
 
             {/* Desktop Search Input */}

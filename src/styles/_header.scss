@@ -136,6 +136,32 @@
         }
       }
 
+      /* Tombol Akun & Layanan di Navbar Transparan */
+      .btn-nav-user {
+        border: 1.5px solid rgba(255, 255, 255, 0.45) !important;
+        background-color: rgba(255, 255, 255, 0.15) !important;
+        backdrop-filter: blur(8px);
+        color: #ffffff !important;
+
+        svg {
+          color: #ffffff !important;
+        }
+
+        &:hover,
+        &:active,
+        &.active {
+          border-color: #ffffff !important;
+          background-color: #ffffff !important;
+          color: var(--Primary) !important;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+          transform: translateY(-1px);
+
+          svg {
+            color: var(--Primary) !important;
+          }
+        }
+      }
+
       /* Tombol Donasi di Navbar Transparan (Varian Putih dengan Animasi Fill Kiri-ke-Kanan) */
       .btn-nav-donate {
         border: 1.5px solid #ffffff !important;

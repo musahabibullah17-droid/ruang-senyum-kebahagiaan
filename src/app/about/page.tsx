@@ -29,7 +29,7 @@ export default function AboutPage() {
         {/* Content Section */}
         <section className="py-16">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-            
+
             {/* Visi & Misi */}
             <div className="grid md:grid-cols-2 gap-12">
               <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
@@ -41,7 +41,7 @@ export default function AboutPage() {
                   Menjadi platform donasi dan penggalangan dana sosial paling terpercaya di Indonesia yang mampu menginspirasi jutaan orang untuk berbagi kebahagiaan setiap harinya.
                 </p>
               </div>
-              
+
               <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
                 <div className="w-12 h-12 bg-sky-100 text-[#0284c7] rounded-xl flex items-center justify-center mb-6">
                   <Heart className="w-6 h-6" />

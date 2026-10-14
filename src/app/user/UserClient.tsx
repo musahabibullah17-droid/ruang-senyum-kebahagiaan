@@ -261,22 +261,22 @@ export default function UserClient() {
         <div className="lg:col-span-5 lg:space-y-6 order-1 lg:order-2">
           
           {/* Header Profile / Welcome Banner */}
-          <div className="bg-gradient-to-br from-sky-600 via-sky-500 to-blue-600 rounded-2xl p-5 sm:p-6 text-white shadow-lg shadow-sky-600/15 relative overflow-hidden">
+          <div className="bg-gradient-to-br from-sky-600 via-sky-500 to-blue-600 rounded-2xl p-4 sm:p-6 text-white shadow-lg shadow-sky-600/15 relative overflow-hidden">
             <div className="absolute top-0 right-0 -mt-6 -mr-6 w-32 h-32 bg-white/10 rounded-full blur-xl pointer-events-none" />
             <div className="absolute bottom-0 left-0 -mb-6 -ml-6 w-24 h-24 bg-white/10 rounded-full blur-lg pointer-events-none" />
 
-            <div className="flex items-center gap-4 relative z-10">
-              <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center shrink-0 shadow-inner">
-                <Heart className="w-8 h-8 text-white fill-white/80" />
+            <div className="flex items-center gap-3.5 sm:gap-4 relative z-10">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center shrink-0 shadow-inner">
+                <Heart className="w-7 h-7 sm:w-8 sm:h-8 text-white fill-white/80" />
               </div>
               <div className="flex-1 min-w-0">
                 <h2 className="text-xl sm:text-2xl font-bold truncate tracking-tight text-white">
                   Sahabat Kebaikan
                 </h2>
-                <p className="text-sm sm:text-base text-sky-100 mt-1 line-clamp-1 font-medium">
+                <p className="text-sm sm:text-base text-sky-100 mt-0.5 sm:mt-1 line-clamp-1 font-medium">
                   {APP_NAME}
                 </p>
-                <div className="inline-flex items-center gap-1.5 mt-2 bg-white/15 backdrop-blur-sm px-3 py-1 rounded-full text-xs sm:text-sm font-semibold text-sky-50 border border-white/20">
+                <div className="inline-flex items-center gap-1.5 mt-1.5 sm:mt-2 bg-white/15 backdrop-blur-sm px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-semibold text-sky-50 border border-white/20">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                   Platform Donasi Terverifikasi
                 </div>
@@ -285,19 +285,19 @@ export default function UserClient() {
 
             {/* Quick Action Buttons (Mengadopsi style tf-btn & btn-pair dari Beranda) */}
             <div 
-              className="btn-pair-group grid grid-cols-2 gap-3 mt-6 pt-5 border-t border-white/20 relative z-10"
+              className="btn-pair-group grid grid-cols-2 gap-2.5 sm:gap-3 mt-5 sm:mt-6 pt-4 sm:pt-5 border-t border-white/20 relative z-10"
               onMouseLeave={() => setActiveBannerBtn(0)}
             >
               <Link
                 href="/campaigns"
                 onMouseEnter={() => setActiveBannerBtn(0)}
                 onClick={() => setActiveBannerBtn(0)}
-                className={`tf-btn btn-pair-item !rounded-xl !h-12 !text-sm sm:!text-base !font-bold w-full ${
+                className={`tf-btn btn-pair-item !rounded-xl !h-11 sm:!h-12 !px-2 sm:!px-4 !text-xs sm:!text-sm md:!text-base !font-bold w-full ${
                   activeBannerBtn === 0 ? 'is-active' : 'is-inactive'
                 }`}
               >
-                <Heart className="w-4 h-4 mr-2 fill-current shrink-0" />
-                <span>Donasi Sekarang</span>
+                <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5 fill-current shrink-0" />
+                <span className="truncate">Donasi Sekarang</span>
               </Link>
               <button
                 type="button"
@@ -306,12 +306,12 @@ export default function UserClient() {
                   setActiveBannerBtn(1);
                   handleShare();
                 }}
-                className={`tf-btn btn-pair-item !rounded-xl !h-12 !text-sm sm:!text-base !font-bold w-full ${
+                className={`tf-btn btn-pair-item !rounded-xl !h-11 sm:!h-12 !px-2 sm:!px-4 !text-xs sm:!text-sm md:!text-base !font-bold w-full ${
                   activeBannerBtn === 1 ? 'is-active' : 'is-inactive'
                 }`}
               >
-                <Share2 className="w-4 h-4 mr-2 shrink-0" />
-                <span>{copiedLink ? 'Tersalin!' : 'Bagikan'}</span>
+                <Share2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5 shrink-0" />
+                <span className="truncate">{copiedLink ? 'Tersalin!' : 'Bagikan'}</span>
               </button>
             </div>
           </div>
